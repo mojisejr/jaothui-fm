@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -13,28 +13,24 @@ export default function Home() {
             className="mx-auto"
           />
         </div>
-        
+
         <h1 className="text-2xl font-bold mb-4 text-secondary">
-          ระบบบริหารจัดการฟาร์ม
+          ยินดีต้อนรับสู่ระบบ E-ID
         </h1>
-        
-        <p className="text-gray-600 mb-8">
-          จัดการสัตว์ในฟาร์มของคุณได้อย่างง่ายดาย
-        </p>
-        
+
+        <p className="text-gray-600 mb-8">ข้อมูลสัตว์</p>
+
         <div className="space-y-4">
           <button className="btn btn-primary w-full">
             Test DaisyUI Orange Theme
           </button>
-          
+
           <div className="card-custom p-4">
             <h3 className="font-semibold mb-2">การจัดการสัตว์</h3>
-            <p className="text-sm text-gray-600">
-              ควาย, ไก่, วัว, หมู, ม้า
-            </p>
+            <p className="text-sm text-gray-600">ควาย, ไก่, วัว, หมู, ม้า</p>
           </div>
         </div>
       </div>
     </main>
-  )
+  );
 }
