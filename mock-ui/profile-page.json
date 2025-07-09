@@ -1,0 +1,136 @@
+{
+  "page_name": "หน้าแดชบอร์ด",
+  "description": "หน้าหลักของระบบแสดงการ์ดผู้ใช้และเมนูต่างๆ",
+  "layout": {
+    "type": "mobile_dashboard",
+    "background_color": "#4a4a4a",
+    "container": {
+      "max_width": "400px",
+      "padding": "0",
+      "margin": "0 auto"
+    }
+  },
+  "components": [
+    {
+      "type": "header",
+      "title": "ระบบ E-ID",
+      "logo": "jaothui_logo",
+      "notification_badge": {
+        "count": 3,
+        "background": "#ff4444",
+        "color": "#ffffff",
+        "border_radius": "50%",
+        "position": "absolute"
+      },
+      "background": "#4a4a4a",
+      "color": "#ffffff",
+      "padding": "20px",
+      "font_size": "20px",
+      "font_weight": "bold",
+      "display": "flex",
+      "justify_content": "space-between",
+      "align_items": "center"
+    },
+    {
+      "type": "user_greeting",
+      "text": "สวัสดี! คุณรุ่งนิดล์ ใครขึ้นลาดหัก",
+      "background": "#ffffff",
+      "padding": "20px",
+      "font_size": "16px",
+      "color": "#333333"
+    },
+    {
+      "type": "user_card",
+      "avatar": {
+        "image": "user_avatar_bull.png",
+        "width": "100px",
+        "height": "100px",
+        "border_radius": "15px"
+      },
+      "user_info": {
+        "name": "ชื่อฟาร์ม : xxxxxxxxxxxxxxxx",
+        "farm_id": "รหัสฟาร์ม : xxxxxxxxx",
+        "farm_code": "หมายเลข : xxxxxxxxxxxxxxxxx"
+      },
+      "background": "#ffffff",
+      "border_radius": "15px",
+      "padding": "20px",
+      "margin": "20px",
+      "display": "flex",
+      "align_items": "center",
+      "gap": "15px"
+    },
+    {
+      "type": "menu_section",
+      "background": "#ffffff",
+      "padding": "20px",
+      "margin": "0 20px 20px 20px",
+      "border_radius": "15px",
+      "items": [
+        {
+          "type": "menu_item",
+          "text": "ข้อมูลกระบือภายในฟาร์ม",
+          "badge": "2",
+          "background": "#f9f9f9",
+          "border_radius": "10px",
+          "padding": "15px 20px",
+          "margin_bottom": "10px",
+          "display": "flex",
+          "justify_content": "space-between",
+          "align_items": "center"
+        },
+        {
+          "type": "menu_item",
+          "text": "เพิ่มข้อมูลกระบือในฟาร์ม",
+          "action_button": {
+            "text": "คลิก",
+            "background": "#cccccc",
+            "color": "#666666",
+            "border_radius": "15px",
+            "padding": "8px 15px",
+            "font_size": "12px"
+          },
+          "background": "#f9f9f9",
+          "border_radius": "10px",
+          "padding": "15px 20px",
+          "margin_bottom": "10px",
+          "display": "flex",
+          "justify_content": "space-between",
+          "align_items": "center"
+        },
+        {
+          "type": "menu_item",
+          "text": "หมายเลขประจำตัวสัตว์",
+          "action_button": {
+            "text": "ค้นหา",
+            "background": "#cccccc",
+            "color": "#666666",
+            "border_radius": "15px",
+            "padding": "8px 15px",
+            "font_size": "12px"
+          },
+          "background": "#f9f9f9",
+          "border_radius": "10px",
+          "padding": "15px 20px",
+          "margin_bottom": "10px",
+          "display": "flex",
+          "justify_content": "space-between",
+          "align_items": "center"
+        }
+      ]
+    },
+    {
+      "type": "logout_button",
+      "text": "ออกจากระบบ",
+      "background": "transparent",
+      "color": "#ffffff",
+      "border": "1px solid #ffffff",
+      "border_radius": "25px",
+      "padding": "15px 30px",
+      "width": "80%",
+      "margin": "20px auto",
+      "font_size": "16px",
+      "text_align": "center"
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+{
+  "page_name": "อัปเดตข้อมูลกระบือในระบบ",
+  "description": "หน้าฟอร์มสำหรับอัปเดตข้อมูลกระบือที่มีอยู่ในระบบ",
+  "layout": {
+    "type": "mobile_form",
+    "background_color": "#f5f5f5",
+    "container": {
+      "max_width": "400px",
+      "padding": "20px",
+      "margin": "0 auto"
+    }
+  },
+  "components": [
+    {
+      "type": "header",
+      "title": "อัปเดตข้อมูลกระบือในระบบ",
+      "subtitle": "โปรดกรอกข้อมูลความจริงเท่านั้น",
+      "text_align": "center",
+      "font_size": "18px",
+      "font_weight": "bold",
+      "margin_bottom": "30px"
+    },
+    {
+      "type": "form_section",
+      "title": "ข้อมูลกระบือ",
+      "fields": [
+        {
+          "type": "input",
+          "label": "ชื่อ",
+          "value": "นางพญา",
+          "background": "#ffffff",
+          "border_radius": "25px",
+          "padding": "15px 20px",
+          "margin_bottom": "15px"
+        },
+        {
+          "type": "input_with_button",
+          "label": "วันเดือนปีเกิด",
+          "value": "2 ธันวาคม 2558",
+          "button_icon": "+",
+          "button_position": "right",
+          "background": "#ffffff",
+          "border_radius": "25px",
+          "padding": "15px 20px",
+          "margin_bottom": "15px"
+        },
+        {
+          "type": "input",
+          "label": "เลขประจำตัวสัตว์",
+          "value": "764040226600359",
+          "background": "#ffffff",
+          "border_radius": "25px",
+          "padding": "15px 20px",
+          "margin_bottom": "15px"
+        },
+        {
+          "type": "input_with_icon",
+          "label": "น้ำหนัก",
+          "value": "น้ำหนัก 1,500 กิโลกรัม",
+          "icon": "edit",
+          "icon_position": "right",
+          "background": "#ffffff",
+          "border_radius": "25px",
+          "padding": "15px 20px",
+          "margin_bottom": "15px"
+        },
+        {
+          "type": "input_with_icon",
+          "label": "ส่วนสูง",
+          "value": "ส่วนสูง 175 เซนติเมตร",
+          "icon": "edit",
+          "icon_position": "right",
+          "background": "#ffffff",
+          "border_radius": "25px",
+          "padding": "15px 20px",
+          "margin_bottom": "15px"
+        }
+      ]
+    },
+    {
+      "type": "form_section",
+      "title": "ข้อมูลที่ต้องการอัปเดต",
+      "fields": [
+        {
+          "type": "textarea",
+          "placeholder": "รายละเอียดการอัปเดต",
+          "background": "#ffffff",
+          "border_radius": "15px",
+          "padding": "20px",
+          "height": "120px",
+          "text_align": "center",
+          "color": "#999999",
+          "margin_bottom": "20px"
+        }
+      ]
+    },
+    {
+      "type": "form_section",
+      "title": "ติดการแจ้งเตือน",
+      "fields": [
+        {
+          "type": "input_with_button",
+          "label": "วันที่แจ้งเตือน",
+          "placeholder": "วว/ดด/ปป",
+          "button_icon": "+",
+          "button_position": "right",
+          "background": "#ffffff",
+          "border_radius": "25px",
+          "padding": "15px 20px",
+          "margin_bottom": "20px"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "text": "ยืนยันข้อมูลกระบือ",
+      "background": "#f39c12",
+      "color": "#ffffff",
+      "border_radius": "25px",
+      "padding": "15px 30px",
+      "width": "100%",
+      "font_size": "16px",
+      "font_weight": "bold",
+      "margin_top": "20px",
+      "margin_bottom": "20px"
+    },
+    {
+      "type": "form_section",
+      "title": "ข้อมูลการอัปเดต",
+      "fields": [
+        {
+          "type": "update_list",
+          "items": [
+            {
+              "date": "11/3/68",
+              "description": "ตรวจก้อนรักษายานบา",
+              "background": "#ffffff",
+              "border_radius": "25px",
+              "padding": "15px 20px",
+              "margin_bottom": "10px"
+            },
+            {
+              "date": "12/3/68",
+              "description": "ให้ยาบรรจุ",
+              "background": "#ffffff",
+              "border_radius": "25px",
+              "padding": "15px 20px",
+              "margin_bottom": "10px"
+            },
+            {
+              "date": "25/3/68",
+              "description": "ลุงน้ำหยาดเป็นปกติ",
+              "background": "#ffffff",
+              "border_radius": "25px",
+              "padding": "15px 20px",
+              "margin_bottom": "10px"
+            },
+            {
+              "date": "16/4/68",
+              "description": "ผสมเกี่ยวอำไอเค",
+              "background": "#ffffff",
+              "border_radius": "25px",
+              "padding": "15px 20px",
+              "margin_bottom": "10px"
+            },
+            {
+              "date": "18/5/68",
+              "description": "ก้องจำไอเค",
+              "background": "#ffffff",
+              "border_radius": "25px",
+              "padding": "15px 20px",
+              "margin_bottom": "10px"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "text": "กลับสู่หน้าหลัก",
+      "background": "#f39c12",
+      "color": "#ffffff",
+      "border_radius": "25px",
+      "padding": "15px 30px",
+      "width": "100%",
+      "font_size": "16px",
+      "font_weight": "bold",
+      "margin_top": "20px"
+    }
+  ]
+}

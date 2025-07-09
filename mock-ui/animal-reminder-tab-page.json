@@ -1,0 +1,129 @@
+{
+  "page_name": "รายการแจ้งเตือน",
+  "description": "หน้าแสดงรายการแจ้งเตือนต่างๆ ในระบบ",
+  "layout": {
+    "type": "mobile_list",
+    "background_color": "#4a4a4a",
+    "container": {
+      "max_width": "400px",
+      "padding": "0",
+      "margin": "0 auto"
+    }
+  },
+  "components": [
+    {
+      "type": "header",
+      "title": "ระบบ E-ID",
+      "logo": "jaothui_logo",
+      "background": "#4a4a4a",
+      "color": "#ffffff",
+      "padding": "20px",
+      "font_size": "20px",
+      "font_weight": "bold",
+      "display": "flex",
+      "justify_content": "space-between",
+      "align_items": "center"
+    },
+    {
+      "type": "tab_navigation",
+      "tabs": [
+        {
+          "text": "กระบือในฟาร์ม",
+          "active": false,
+          "background": "#cccccc",
+          "color": "#666666",
+          "border_top_left_radius": "15px",
+          "border_top_right_radius": "15px"
+        },
+        {
+          "text": "รายการแจ้งเตือน",
+          "active": true,
+          "background": "#ffffff",
+          "color": "#000000",
+          "border_top_left_radius": "15px",
+          "border_top_right_radius": "15px"
+        }
+      ]
+    },
+    {
+      "type": "notification_list",
+      "background": "#ffffff",
+      "padding": "20px",
+      "items": [
+        {
+          "type": "notification_card",
+          "id": "ชื่อกระบือ : xxxxxxxxx",
+          "status": "รายการ : รอบดิกได้",
+          "code": "หมายเลข : xxxxxxxxxxx",
+          "date": "วันที่ : วว/ดด/ปป",
+          "action_button": {
+            "text": "คลิก",
+            "background": "#cccccc",
+            "color": "#666666",
+            "border_radius": "15px",
+            "padding": "8px 15px",
+            "font_size": "12px"
+          },
+          "background": "#f9f9f9",
+          "border_radius": "15px",
+          "padding": "15px",
+          "margin_bottom": "15px"
+        },
+        {
+          "type": "notification_card",
+          "id": "ชื่อกระบือ : xxxxxxxxx",
+          "status": "รายการ : ครบรอบหน่วน",
+          "code": "หมายเลข : xxxxxxxxxxx",
+          "date": "วันที่ : วว/ดด/ปป",
+          "action_button": {
+            "text": "คลิก",
+            "background": "#cccccc",
+            "color": "#666666",
+            "border_radius": "15px",
+            "padding": "8px 15px",
+            "font_size": "12px"
+          },
+          "background": "#f9f9f9",
+          "border_radius": "15px",
+          "padding": "15px",
+          "margin_bottom": "15px"
+        },
+        {
+          "type": "notification_card",
+          "id": "ชื่อกระบือ : xxxxxxxxx",
+          "status": "รายการ : ตรวจท้อง",
+          "code": "หมายเลข : xxxxxxxxxxx",
+          "date": "วันที่ : วว/ดด/ปป",
+          "action_button": {
+            "text": "คลิก",
+            "background": "#cccccc",
+            "color": "#666666",
+            "border_radius": "15px",
+            "padding": "8px 15px",
+            "font_size": "12px"
+          },
+          "background": "#f9f9f9",
+          "border_radius": "15px",
+          "padding": "15px",
+          "margin_bottom": "15px"
+        }
+      ]
+    },
+    {
+      "type": "bottom_button",
+      "text": "หน้าหลัก",
+      "background": "#f39c12",
+      "color": "#ffffff",
+      "border_radius": "25px",
+      "padding": "15px 30px",
+      "width": "80%",
+      "margin": "20px auto",
+      "font_size": "16px",
+      "font_weight": "bold",
+      "position": "fixed",
+      "bottom": "30px",
+      "left": "50%",
+      "transform": "translateX(-50%)"
+    }
+  ]
+}

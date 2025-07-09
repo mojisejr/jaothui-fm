@@ -1,0 +1,156 @@
+{
+  "page_name": "โปรไฟล์กระบือ",
+  "description": "หน้าแสดงข้อมูลรายละเอียดของกระบือแต่ละตัว",
+  "layout": {
+    "type": "mobile_profile",
+    "background_color": "#f5f5f5",
+    "container": {
+      "max_width": "400px",
+      "padding": "0",
+      "margin": "0 auto"
+    }
+  },
+  "components": [
+    {
+      "type": "header_tab",
+      "tabs": [
+        {
+          "text": "PED",
+          "active": true,
+          "background": "#f39c12",
+          "color": "#ffffff"
+        },
+        {
+          "text": "ART",
+          "active": false,
+          "background": "#e0e0e0",
+          "color": "#666666"
+        }
+      ],
+      "search_icon": true,
+      "background": "#ffffff",
+      "padding": "15px"
+    },
+    {
+      "type": "buffalo_image",
+      "image_url": "buffalo_profile.jpg",
+      "image_alt": "รูปกระบือ",
+      "width": "100%",
+      "height": "250px",
+      "object_fit": "cover",
+      "border_radius": "15px",
+      "margin": "10px"
+    },
+    {
+      "type": "info_section",
+      "title": "information",
+      "background": "#ffffff",
+      "border_radius": "15px",
+      "padding": "20px",
+      "margin": "10px",
+      "fields": [
+        {
+          "type": "info_row",
+          "icon": "buffalo",
+          "label": "Name of Buffalo",
+          "value": "เอกบงกล",
+          "font_weight": "bold"
+        },
+        {
+          "type": "info_row",
+          "icon": "id_card",
+          "label": "Signature id",
+          "value": "764040226301501"
+        },
+        {
+          "type": "info_row",
+          "icon": "calendar",
+          "label": "Birthday date",
+          "value": "27-02-2559"
+        },
+        {
+          "type": "info_row",
+          "icon": "gender",
+          "label": "Buffalo sex",
+          "value": "Male"
+        },
+        {
+          "type": "info_row",
+          "icon": "id_card",
+          "label": "Mother id",
+          "value": "764040226308855"
+        },
+        {
+          "type": "info_row",
+          "icon": "id_card",
+          "label": "Father id",
+          "value": "764040226309988"
+        },
+        {
+          "type": "info_row",
+          "icon": "dna",
+          "label": "Genome accession",
+          "value": "OP835886"
+        },
+        {
+          "type": "info_row",
+          "icon": "height",
+          "label": "Stature",
+          "value": "OP835886"
+        },
+        {
+          "type": "info_row",
+          "icon": "color",
+          "label": "Colour",
+          "value": "Black"
+        },
+        {
+          "type": "info_row",
+          "icon": "trophy",
+          "label": "Rewards",
+          "value": "8_trophies",
+          "display_as": "trophy_icons"
+        }
+      ]
+    },
+    {
+      "type": "action_button",
+      "text": "อัปเดตข้อมูลกระบือ",
+      "icon": "edit",
+      "background": "#f39c12",
+      "color": "#ffffff",
+      "border_radius": "25px",
+      "padding": "15px 30px",
+      "width": "90%",
+      "margin": "20px auto",
+      "font_size": "16px",
+      "font_weight": "bold"
+    },
+    {
+      "type": "bottom_actions",
+      "buttons": [
+        {
+          "text": "กลับสู่หน้าหลัก",
+          "background": "#e0e0e0",
+          "color": "#666666",
+          "border_radius": "25px",
+          "padding": "15px 30px",
+          "width": "45%",
+          "font_size": "14px"
+        },
+        {
+          "text": "เพิ่มข้อมูลกระบือ",
+          "background": "#f39c12",
+          "color": "#ffffff",
+          "border_radius": "25px",
+          "padding": "15px 30px",
+          "width": "45%",
+          "font_size": "14px"
+        }
+      ],
+      "layout": "flex",
+      "justify_content": "space-between",
+      "margin": "20px"
+    }
+  ]
+}

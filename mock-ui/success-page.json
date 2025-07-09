@@ -1,0 +1,60 @@
+{
+  "page_name": "ยินดีต้อนรับ คุณXXXXXX",
+  "description": "หน้าแสดงความสำเร็จในการสร้างบัญชีและต้อนรับผู้ใช้ใหม่",
+  "layout": {
+    "type": "mobile_success",
+    "background_color": "#ffffff",
+    "container": {
+      "max_width": "400px",
+      "padding": "60px 20px",
+      "margin": "0 auto",
+      "text_align": "center"
+    }
+  },
+  "components": [
+    {
+      "type": "logo_section",
+      "logo": {
+        "image": "jaothui_logo.png",
+        "width": "120px",
+        "height": "120px",
+        "margin_bottom": "30px"
+      },
+      "brand_name": {
+        "text": "JAOTHUI",
+        "font_size": "32px",
+        "font_weight": "bold",
+        "color": "#f39c12",
+        "margin_bottom": "60px"
+      }
+    },
+    {
+      "type": "success_message",
+      "title": "ยินดีต้อนรับ คุณXXXXXX",
+      "subtitle": "กรุณาเข้าสู่ระบบเพื่อเริ่มรายการ",
+      "title_style": {
+        "font_size": "24px",
+        "font_weight": "bold",
+        "color": "#333333",
+        "margin_bottom": "20px"
+      },
+      "subtitle_style": {
+        "font_size": "16px",
+        "color": "#666666",
+        "margin_bottom": "80px"
+      }
+    },
+    {
+      "type": "action_button",
+      "text": "เข้าสู่ระบบ",
+      "background": "#f39c12",
+      "color": "#ffffff",
+      "border_radius": "25px",
+      "padding": "15px 50px",
+      "font_size": "16px",
+      "font_weight": "bold",
+      "width": "80%",
+      "margin": "0 auto"
+    }
+  ]
+}
