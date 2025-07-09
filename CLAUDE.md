@@ -107,15 +107,22 @@
 - [ ] **Task 1.2.3**: Create Authentication Pages
   - **Dependencies**: Task 1.1.3, 1.2.1 completed
   - **Technical Details**:
-    - Create `app/(auth)/sign-in/page.tsx`
-    - Create `app/(auth)/sign-up/page.tsx`
-    - Create `app/(auth)/success/page.tsx`
-    - Implement mobile-first responsive design
-    - Add form validation and error handling
+    - Create `app/(auth)/sign-in/[[...sign-in]]/page.tsx` following `login-page.json`
+    - Create `app/(auth)/sign-up/[[...sign-up]]/page.tsx` following `register-page.json`
+    - Create `app/(auth)/success/page.tsx` following `success-page.json`
+    - Implement consistent logo section (120px x 120px) with JAOTHUI branding
+    - Use white input backgrounds `#f5f5f5` with `#e0e0e0` borders and 10px border-radius
+    - Add form fields with 15px padding and 20px bottom margins
+    - Include orange action buttons `#f39c12` with 25px border-radius and 80% width
+    - Add "ลืมรหัสผ่าน?" and "ยังไม่มีบัญชี? สร้างบัญชี" links as per design
+    - Success page shows personalized "ยินดีต้อนรับ คุณXXXXXX" message
   - **Acceptance Criteria**:
-    - All auth pages render correctly on mobile/desktop
-    - Form validation provides clear feedback
-    - Success page shows after registration
+    - All pages match respective JSON designs exactly
+    - Clerk authentication components integrate seamlessly
+    - Consistent branding and color scheme across all auth pages
+    - Phone number field works with Clerk phone authentication
+    - Success page personalizes with actual user name
+    - Mobile-responsive with proper touch-friendly elements
 
 #### 1.3 Database Foundation
 
@@ -183,14 +190,19 @@
 - [ ] **Task 1.4.2**: Create Home Page
   - **Dependencies**: Task 1.1.3, 1.4.1 completed
   - **Technical Details**:
-    - Create `app/page.tsx` with welcome content
-    - Implement hero section with CTA button
-    - Add farm management feature highlights
-    - Use orange theme colors consistently
+    - Create `app/page.tsx` following `home-page.json` design
+    - Implement logo section with JAOTHUI brand (120px x 120px)
+    - Add welcome text: "ยินดีต้อนรับเข้าสู่ระบบ E-ID" และ "ข้อมูลควาย"
+    - Include "Powered by JAOTHUI" footer text
+    - Create orange CTA button "เข้าสู่ระบบ" with 25px border-radius
+    - Use 400px max-width container with 40px padding
+    - Center all content with proper spacing (30px, 40px, 60px margins)
   - **Acceptance Criteria**:
-    - Home page is mobile-responsive
-    - CTA button directs to sign-up
-    - Content is clear and engaging
+    - Matches `home-page.json` design exactly
+    - Logo displays correctly from `public/jaothui-logo.png`
+    - Orange theme `#f39c12` applies consistently
+    - CTA button redirects to Clerk sign-in
+    - Mobile-responsive with proper touch targets
 
 ### Phase 2: Core Farm Management (Must Have)
 
@@ -204,14 +216,21 @@
 
   - **Dependencies**: Phase 1 completed
   - **Technical Details**:
-    - Create `app/(dashboard)/layout.tsx` with auth protection
-    - Implement mobile-first navigation header
-    - Add notification bell with counter
-    - Setup bottom navigation for mobile
+    - Create `app/(dashboard)/layout.tsx` with auth protection following `profile-page.json`
+    - Implement header with "ระบบ E-ID" title and notification bell (red badge with count)
+    - Use dark gray background `#4a4a4a` for header with white text
+    - Add user greeting section "สวัสดี! คุณรุ่งนิดล์ ใครขึ้นลาดหัก" style
+    - Include farm info card with avatar (100px x 100px with 15px border-radius)
+    - Create menu section with rounded cards `#f9f9f9` background
+    - Add logout button with transparent background and white border
+    - Use 400px max-width container with proper mobile spacing
   - **Acceptance Criteria**:
-    - Only authenticated users can access
-    - Navigation is intuitive on mobile
-    - Notification bell shows unread count
+    - Matches `profile-page.json` design structure exactly
+    - Header shows notification badge count (red circle with number)
+    - Farm info displays correctly with editable fields
+    - Menu items show proper badges and action buttons
+    - Only authenticated users can access dashboard routes
+    - Responsive layout works on mobile devices
 
 - [ ] **Task 2.1.2**: Implement User Greeting Section
 
@@ -292,26 +311,43 @@
 
   - **Dependencies**: Task 2.3.1, 2.2.2 completed
   - **Technical Details**:
-    - Create `app/(dashboard)/animals/page.tsx`
-    - Implement tab navigation (Animal List / Reminders)
-    - Design animal cards with essential info
-    - Add search and filter functionality
+    - Create `app/(dashboard)/animals/page.tsx` following `animal-list-tab-page.json`
+    - Implement tab navigation: "กระบือในฟาร์ม" and "รายการแจ้งเตือน"
+    - Use rounded top corners (15px) for tabs with white active/gray inactive states
+    - Design animal cards with profile image, name, birth date, and ID number
+    - Use `#f9f9f9` background for cards with 15px border-radius and padding
+    - Add fixed bottom button "หน้าหลัก" in orange `#f39c12`
+    - Implement reminder tab following `animal-reminder-tab-page.json`
+    - Show notification cards with status, date, and action buttons
+    - Use 400px max-width with dark header `#4a4a4a`
   - **Acceptance Criteria**:
-    - Animal list displays in card format
-    - Tab navigation works smoothly
-    - Search/filter functions work correctly
+    - Matches both `animal-list-tab-page.json` and `animal-reminder-tab-page.json` designs
+    - Tab switching works between animal list and reminders
+    - Animal cards display profile images and all required info
+    - Reminder cards show status, dates, and clickable action buttons
+    - Fixed bottom navigation works correctly
+    - Responsive design maintains proper spacing on mobile
 
 - [ ] **Task 2.3.3**: Create Animal Detail Page
   - **Dependencies**: Task 2.3.2 completed
   - **Technical Details**:
-    - Create `app/(dashboard)/animals/[id]/page.tsx`
-    - Display comprehensive animal information
-    - Add edit button for animal details
-    - Show related activities and reminders
+    - Create `app/(dashboard)/animals/[id]/page.tsx` following `animal-detail-page.json`
+    - Implement header tabs "PED" (active orange) and "ART" (inactive gray)
+    - Display full-width animal image (250px height, 15px border-radius)
+    - Create information section with icon + label + value rows
+    - Include fields: Name, Signature ID, Birthday, Sex, Mother/Father ID, Genome, Stature, Color
+    - Add trophy display for rewards (8 trophy icons)
+    - Implement "อัปเดตข้อมูลกระบือ" button in orange `#f39c12`
+    - Add bottom action buttons: "กลับสู่หน้าหลัก" (gray) and "เพิ่มข้อมูลกระบือ" (orange)
+    - Use white background `#ffffff` with 15px border-radius cards
+    - Apply 20px padding and 10px margins throughout
   - **Acceptance Criteria**:
-    - All animal details display correctly
-    - Navigation to/from list works
-    - Related data loads properly
+    - Matches `animal-detail-page.json` design exactly
+    - All animal information displays with proper icons
+    - Tab navigation between PED/ART works correctly
+    - Action buttons navigate to appropriate pages
+    - Trophy display shows correct number of achievements
+    - Responsive layout maintains proper spacing
 
 ### Phase 3: Activity & Reminder System (Must Have)
 
@@ -622,38 +658,43 @@ claude → [round prompt] → atomic task execution → manual test → acceptan
 **Task A: Authentication Pages & Home Page**
 
 - **Technical Details**:
-  - Create `app/page.tsx` with welcome content and hero section
-  - Create `app/(auth)/sign-in/[[...sign-in]]/page.tsx` for Clerk sign-in
-  - Create `app/(auth)/sign-up/[[...sign-up]]/page.tsx` for Clerk sign-up
-  - Create `app/(auth)/success/page.tsx` for post-registration flow
-  - Implement mobile-first responsive design with Tailwind classes
-  - Add form validation and error handling
-  - Include CTA buttons and navigation elements
+  - Create `app/page.tsx` following `mock-ui/home-page.json` design exactly
+  - Create `app/(auth)/sign-in/[[...sign-in]]/page.tsx` following `mock-ui/login-page.json`
+  - Create `app/(auth)/sign-up/[[...sign-up]]/page.tsx` following `mock-ui/register-page.json`
+  - Create `app/(auth)/success/page.tsx` following `mock-ui/success-page.json`
+  - Implement JAOTHUI logo (120px x 120px) from `public/jaothui-logo.png`
+  - Use consistent orange theme `#f39c12` and design patterns across all pages
+  - Apply proper spacing, border-radius, and responsive design as per JSON specs
+  - Integrate Clerk authentication components while maintaining design consistency
 - **Dependencies**: Round 1, 2 completed (requires auth and styling)
 - **Acceptance Criteria**:
-  - [ ] Home page renders with proper hero section and CTA
-  - [ ] Sign-in/sign-up pages integrate with Clerk components
-  - [ ] Success page shows after registration completion
-  - [ ] All pages are mobile-responsive (test 320px to 1024px)
-  - [ ] Navigation between pages works correctly
+  - [ ] All pages match their respective JSON design files exactly
+  - [ ] JAOTHUI logo displays correctly from public assets
+  - [ ] Clerk authentication integrates seamlessly with custom designs
+  - [ ] Orange theme and consistent styling applied throughout
+  - [ ] Mobile-responsive design works perfectly (400px max-width containers)
+  - [ ] All form elements and buttons follow design specifications
 
 **Task B: Protected Dashboard Layout Structure**
 
 - **Technical Details**:
-  - Create `app/(dashboard)/layout.tsx` with authentication protection
-  - Implement mobile-first navigation header with notification bell
-  - Create bottom navigation for mobile devices
-  - Setup user context and farm data fetching
-  - Add loading states and error boundaries
-  - Implement logout functionality
-  - Create basic dashboard page structure
+  - Create `app/(dashboard)/layout.tsx` following `mock-ui/profile-page.json` structure
+  - Implement header with "ระบบ E-ID" title and red notification badge
+  - Use dark gray `#4a4a4a` header background with white text
+  - Create user greeting section with personalized message
+  - Implement farm info card with 100px x 100px avatar and 15px border-radius
+  - Add menu section with rounded cards and action buttons
+  - Create logout button with transparent background and white border
+  - Setup authentication protection and proper data fetching
 - **Dependencies**: Task A completed (requires auth pages)
 - **Acceptance Criteria**:
-  - [ ] Only authenticated users can access dashboard routes
-  - [ ] Navigation header displays user information
-  - [ ] Notification bell shows placeholder counter
-  - [ ] Bottom navigation is touch-friendly on mobile
-  - [ ] Loading states display during data fetching
+  - [ ] Dashboard layout matches `profile-page.json` design exactly
+  - [ ] Authentication protection prevents unauthorized access
+  - [ ] Header notification bell displays with red badge counter
+  - [ ] Farm info card shows avatar and editable farm details
+  - [ ] Menu items display with proper badges and action buttons
+  - [ ] Logout functionality works correctly
+  - [ ] Mobile-responsive design with 400px max-width container
 
 **Round Dependencies**: Round 1, 2 must be completed
 **Test Criteria**:
@@ -1030,14 +1071,73 @@ Recovery Levels:
 - **Accessibility**: Semantic HTML, proper contrast ratios
 - **Documentation**: สร้าง docs สำหรับส่วนที่ซับซ้อน
 
-## UI Design Guidelines (from JSON)
+## UI Design Guidelines (from JSON Mock-ups)
 
-- **Primary Color**: `#f39c12` (orange theme)
-- **Mobile-first**: Start with mobile layout, scale up
-- **Card-based**: Use rounded cards with proper spacing
-- **Button Style**: Rounded buttons with consistent padding
-- **Tab Navigation**: Clear active/inactive states
-- **Form Design**: Clean inputs with validation feedback
+### Core Design System:
+
+- **Primary Color**: `#f39c12` (orange theme for brand, buttons, active states)
+- **Secondary Colors**:
+  - Header background: `#4a4a4a` (dark gray)
+  - Card backgrounds: `#ffffff`, `#f9f9f9`, `#f5f5f5`
+  - Secondary buttons: `#cccccc`, `#e0e0e0`
+  - Text colors: `#333333`, `#666666`, `#999999`
+
+### Logo & Branding:
+
+- **Logo File**: `jaothui-logo.png` (reference from mock-ui designs)
+- **Logo Size**: 120px x 120px for most pages
+- **Brand Name**: "JAOTHUI" in orange `#f39c12`
+- **System Title**: "ระบบ E-ID" for headers
+
+### Layout Patterns:
+
+- **Mobile-first**: 400px max-width containers, centered with auto margins
+- **Container Padding**: 20px standard, 40px for welcome pages
+- **Card Spacing**: 15px padding internal, 10-20px margins between cards
+- **Border Radius**: 15px for cards, 25px for buttons and inputs
+
+### Component Guidelines:
+
+#### Buttons:
+
+- **Primary**: Orange `#f39c12` background, white text, 25px border-radius
+- **Secondary**: Gray `#cccccc` background, dark text
+- **Fixed Bottom**: 80% width, centered, 30px from bottom
+- **Touch Target**: Minimum 44px height, 15px padding
+
+#### Inputs & Forms:
+
+- **Background**: White `#ffffff` with light gray `#f5f5f5` for disabled
+- **Border**: 1px solid `#e0e0e0` or none
+- **Padding**: 15px horizontal, 15px vertical
+- **Border Radius**: 25px for text inputs, 15px for textareas
+- **Icons**: Right-aligned edit/action icons
+
+#### Cards:
+
+- **Background**: White or light gray `#f9f9f9`
+- **Border Radius**: 15px consistent
+- **Padding**: 15-20px internal
+- **Shadow**: Subtle or none (flat design approach)
+
+#### Navigation:
+
+- **Tab Style**: Rounded top corners (15px), active tab white background
+- **Header**: Dark gray `#4a4a4a` background, white text, 20px padding
+- **Back Buttons**: Consistent placement and styling
+
+#### Lists & Content:
+
+- **Animal Cards**: Profile image left, info text right, action buttons
+- **Info Rows**: Icon + label + value pattern
+- **Notification Cards**: Status info with action buttons
+- **Spacing**: 15px between list items
+
+### Responsive Behavior:
+
+- **Mobile**: Single column, full-width components
+- **Touch**: 44px minimum touch targets, appropriate spacing
+- **Typography**: 16px base, 24px headings, 14px secondary text
 
 ## Project Structure
 
@@ -1045,23 +1145,71 @@ Recovery Levels:
 farm-management-system/
 ├── app/
 │   ├── (auth)/
+│   │   ├── sign-in/[[...sign-in]]/page.tsx
+│   │   ├── sign-up/[[...sign-up]]/page.tsx
+│   │   └── success/page.tsx
 │   ├── (dashboard)/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx (profile dashboard)
+│   │   ├── animals/
+│   │   │   ├── page.tsx (list with tabs)
+│   │   │   ├── add/page.tsx
+│   │   │   └── [id]/
+│   │   │       ├── page.tsx (detail view)
+│   │   │       └── edit/page.tsx
+│   │   └── activities/
+│   │       └── add/page.tsx
 │   ├── api/
+│   │   ├── farms/
+│   │   ├── animals/
+│   │   └── activities/
+│   ├── layout.tsx (root layout with Clerk)
+│   ├── page.tsx (home/welcome page)
 │   └── globals.css
 ├── components/
 │   ├── ui/
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   ├── Card.tsx
+│   │   ├── TabNavigation.tsx
+│   │   └── NotificationBell.tsx
 │   ├── forms/
-│   └── layouts/
+│   │   ├── AnimalForm.tsx
+│   │   ├── ActivityForm.tsx
+│   │   └── AuthForms.tsx
+│   ├── layouts/
+│   │   ├── Header.tsx
+│   │   ├── MobileNav.tsx
+│   │   └── DashboardLayout.tsx
+│   └── animals/
+│       ├── AnimalCard.tsx
+│       ├── AnimalList.tsx
+│       └── AnimalDetail.tsx
 ├── lib/
 │   ├── prisma.ts
 │   ├── supabase.ts
 │   ├── clerk.ts
 │   ├── types.ts
-│   └── utils.ts
+│   ├── utils.ts
+│   └── validations.ts (Zod schemas)
 ├── prisma/
 │   ├── schema.prisma
 │   └── migrations/
 ├── public/
+│   ├── jaothui-logo.png (120x120px brand logo)
+│   ├── icons/ (UI icons)
+│   └── images/ (placeholder animal images)
+├── mock-ui/ (reference designs)
+│   ├── home-page.json
+│   ├── login-page.json
+│   ├── register-page.json
+│   ├── success-page.json
+│   ├── profile-page.json
+│   ├── animal-list-tab-page.json
+│   ├── animal-detail-page.json
+│   ├── animal-create-page.json
+│   ├── animal-update-page.json
+│   └── animal-reminder-tab-page.json
 ├── CLAUDE.md (this file)
 ├── PROGRESS.md (progress tracking)
 ├── README.md (documentation)
@@ -1129,6 +1277,12 @@ CRON_SECRET=your-random-secret-123
 5. **Progress Tracking**: Update PROGRESS.md after each round
 6. **Error Handling**: Use recovery strategies for timeouts/issues
 7. **Mobile-first**: Always start with mobile design, then desktop
-8. **JSON Reference**: Follow the provided JSON designs exactly
+8. **JSON Design Reference**: **CRITICAL** - Follow the `mock-ui/*.json` designs EXACTLY
+   - Each page has a corresponding JSON file with precise specifications
+   - Use exact colors, spacing, border-radius, and component layouts
+   - Reference logo file: `public/jaothui-logo.png` (120px x 120px)
+   - Brand colors: Orange `#f39c12`, Header `#4a4a4a`, Cards `#f9f9f9`
 9. **Prisma Usage**: Use Prisma Client for all database operations
 10. **Type Safety**: Leverage TypeScript for better development experience
+11. **Asset Management**: Ensure `jaothui-logo.png` is copied to `public/` directory
+12. **Design Consistency**: Maintain JAOTHUI branding and "ระบบ E-ID" system title throughout
