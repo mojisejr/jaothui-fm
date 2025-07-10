@@ -1,0 +1,379 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { AnimalType, Sex } from '@prisma/client'
+import { AnimalWithFarm } from '@/lib/types'
+import { generateAnimalId } from '@/lib/animal-id'
+import { Calendar, Hash, Palette, Ruler, Weight, User, Users, Heart, Camera } from 'lucide-react'
+
+// Form validation schema
+const animalFormSchema = z.object({
+  animalType: z.enum(['BUFFALO', 'CHICKEN', 'COW', 'PIG', 'HORSE']),
+  name: z.string()
+    .min(1, 'กรุณาระบุชื่อสัตว์')
+    .max(100, 'ชื่อสัตว์ต้องไม่เกิน 100 ตัวอักษร'),
+  animalId: z.string()
+    .min(1, 'กรุณาระบุรหัสสัตว์')
+    .length(11, 'รหัสสัตว์ต้องเป็น 11 ตัวอักษร'),
+  sex: z.enum(['MALE', 'FEMALE']).optional(),
+  birthDate: z.string().optional(),
+  color: z.string().max(50, 'สีต้องไม่เกิน 50 ตัวอักษร').optional(),
+  weightKg: z.union([z.number().positive('น้ำหนักต้องมากกว่า 0'), z.literal('')]).optional().transform(val => val === '' ? undefined : val),
+  heightCm: z.union([z.number().positive('ความสูงต้องมากกว่า 0'), z.literal('')]).optional().transform(val => val === '' ? undefined : val),
+  motherName: z.string().max(100, 'ชื่อแม่ต้องไม่เกิน 100 ตัวอักษร').optional(),
+  fatherName: z.string().max(100, 'ชื่อพ่อต้องไม่เกิน 100 ตัวอักษร').optional(),
+  imageUrl: z.string().url('URL รูปภาพไม่ถูกต้อง').optional().or(z.literal('')),
+  farmId: z.string().optional() // Optional for form, will be added by parent component
+})
+
+export type AnimalFormData = z.infer<typeof animalFormSchema>
+
+interface AnimalFormProps {
+  initialData?: AnimalWithFarm
+  mode: 'create' | 'edit'
+  onSubmit: (data: AnimalFormData) => Promise<void>
+  onCancel: () => void
+  isSubmitting?: boolean
+}
+
+export default function AnimalForm({ 
+  initialData, 
+  mode, 
+  onSubmit, 
+  onCancel, 
+  isSubmitting = false 
+}: AnimalFormProps) {
+  const [isGeneratingId, setIsGeneratingId] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue
+  } = useForm<AnimalFormData>({
+    resolver: zodResolver(animalFormSchema),
+    defaultValues: initialData ? {
+      animalType: initialData.animalType,
+      name: initialData.name,
+      animalId: initialData.animalId,
+      sex: initialData.sex || undefined,
+      birthDate: initialData.birthDate ? new Date(initialData.birthDate).toISOString().slice(0, 10) : undefined,
+      color: initialData.color || undefined,
+      weightKg: initialData.weightKg || undefined,
+      heightCm: initialData.heightCm || undefined,
+      motherName: initialData.motherName || undefined,
+      fatherName: initialData.fatherName || undefined,
+      imageUrl: initialData.imageUrl || undefined
+    } : {
+      animalType: 'BUFFALO',
+      name: '',
+      animalId: '',
+      sex: undefined,
+      birthDate: undefined,
+      color: undefined,
+      weightKg: undefined,
+      heightCm: undefined,
+      motherName: undefined,
+      fatherName: undefined,
+      imageUrl: undefined
+    }
+  })
+
+  const selectedAnimalType = watch('animalType')
+  const currentAnimalId = watch('animalId')
+
+  // Generate animal ID when animal type changes (only for create mode)
+  const handleGenerateId = useCallback(async () => {
+    if (mode === 'edit') return
+    
+    setIsGeneratingId(true)
+    try {
+      const response = await fetch('/api/animals/generate-id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ animalType: selectedAnimalType })
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setValue('animalId', data.animalId)
+      }
+    } catch (error) {
+      console.error('Error generating animal ID:', error)
+    } finally {
+      setIsGeneratingId(false)
+    }
+  }, [mode, selectedAnimalType, setValue])
+
+  // Auto-generate ID when animal type changes in create mode
+  useEffect(() => {
+    if (mode === 'create' && selectedAnimalType && !currentAnimalId) {
+      handleGenerateId()
+    }
+  }, [selectedAnimalType, mode, currentAnimalId, handleGenerateId])
+
+  const getAnimalTypeDisplay = (type: AnimalType) => {
+    const typeMap = {
+      BUFFALO: 'กระบือ',
+      CHICKEN: 'ไก่',
+      COW: 'วัว',
+      PIG: 'หมู',
+      HORSE: 'ม้า'
+    }
+    return typeMap[type] || type
+  }
+
+  const handleFormSubmit = async (data: AnimalFormData) => {
+    try {
+      await onSubmit(data)
+    } catch (error) {
+      console.error('Form submission error:', error)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-[#f5f5f5]">
+      <div className="max-w-md mx-auto bg-white">
+        {/* Header */}
+        <div className="bg-[#4a4a4a] text-white p-4 text-center">
+          <h1 className="text-lg font-medium">
+            {mode === 'create' ? 'เพิ่มสัตว์ใหม่' : 'แก้ไขข้อมูลสัตว์'}
+          </h1>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="p-4 space-y-4">
+          {/* Animal Type */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <Users className="inline w-4 h-4 mr-1" />
+              ประเภทสัตว์ *
+            </label>
+            <select
+              {...register('animalType')}
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+              disabled={mode === 'edit'}
+            >
+              <option value="BUFFALO">กระบือ</option>
+              <option value="CHICKEN">ไก่</option>
+              <option value="COW">วัว</option>
+              <option value="PIG">หมู</option>
+              <option value="HORSE">ม้า</option>
+            </select>
+            {errors.animalType && (
+              <p className="text-red-500 text-sm">{errors.animalType.message}</p>
+            )}
+          </div>
+
+          {/* Animal ID */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <Hash className="inline w-4 h-4 mr-1" />
+              รหัสสัตว์ *
+            </label>
+            <div className="flex space-x-2">
+              <input
+                {...register('animalId')}
+                type="text"
+                className="flex-1 px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+                placeholder="รหัสสัตว์ 11 ตัวอักษร"
+                disabled={mode === 'edit'}
+              />
+              {mode === 'create' && (
+                <button
+                  type="button"
+                  onClick={handleGenerateId}
+                  disabled={isGeneratingId}
+                  className="px-4 py-2 bg-[#f39c12] text-white rounded-[15px] hover:bg-[#e67e22] disabled:bg-gray-400 transition-colors"
+                >
+                  {isGeneratingId ? '...' : 'สร้าง'}
+                </button>
+              )}
+            </div>
+            {errors.animalId && (
+              <p className="text-red-500 text-sm">{errors.animalId.message}</p>
+            )}
+          </div>
+
+          {/* Name */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <User className="inline w-4 h-4 mr-1" />
+              ชื่อ{getAnimalTypeDisplay(selectedAnimalType)} *
+            </label>
+            <input
+              {...register('name')}
+              type="text"
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+              placeholder={`ชื่อ${getAnimalTypeDisplay(selectedAnimalType)}`}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
+          </div>
+
+          {/* Sex */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <Heart className="inline w-4 h-4 mr-1" />
+              เพศ
+            </label>
+            <select
+              {...register('sex')}
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+            >
+              <option value="">ไม่ระบุ</option>
+              <option value="MALE">ตัวผู้</option>
+              <option value="FEMALE">ตัวเมีย</option>
+            </select>
+            {errors.sex && (
+              <p className="text-red-500 text-sm">{errors.sex.message}</p>
+            )}
+          </div>
+
+          {/* Birth Date */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <Calendar className="inline w-4 h-4 mr-1" />
+              วันเกิด
+            </label>
+            <input
+              {...register('birthDate')}
+              type="date"
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+            />
+            {errors.birthDate && (
+              <p className="text-red-500 text-sm">{errors.birthDate.message}</p>
+            )}
+          </div>
+
+          {/* Color */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <Palette className="inline w-4 h-4 mr-1" />
+              สี
+            </label>
+            <input
+              {...register('color')}
+              type="text"
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+              placeholder="สีของสัตว์"
+            />
+            {errors.color && (
+              <p className="text-red-500 text-sm">{errors.color.message}</p>
+            )}
+          </div>
+
+          {/* Weight */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <Weight className="inline w-4 h-4 mr-1" />
+              น้ำหนัก (กิโลกรัม)
+            </label>
+            <input
+              {...register('weightKg', { valueAsNumber: true })}
+              type="number"
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+              placeholder="น้ำหนัก"
+            />
+            {errors.weightKg && (
+              <p className="text-red-500 text-sm">{errors.weightKg.message}</p>
+            )}
+          </div>
+
+          {/* Height */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <Ruler className="inline w-4 h-4 mr-1" />
+              ความสูง (เซนติเมตร)
+            </label>
+            <input
+              {...register('heightCm', { valueAsNumber: true })}
+              type="number"
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+              placeholder="ความสูง"
+            />
+            {errors.heightCm && (
+              <p className="text-red-500 text-sm">{errors.heightCm.message}</p>
+            )}
+          </div>
+
+          {/* Mother Name */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <User className="inline w-4 h-4 mr-1" />
+              ชื่อแม่
+            </label>
+            <input
+              {...register('motherName')}
+              type="text"
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+              placeholder="ชื่อแม่"
+            />
+            {errors.motherName && (
+              <p className="text-red-500 text-sm">{errors.motherName.message}</p>
+            )}
+          </div>
+
+          {/* Father Name */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <User className="inline w-4 h-4 mr-1" />
+              ชื่อพ่อ
+            </label>
+            <input
+              {...register('fatherName')}
+              type="text"
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+              placeholder="ชื่อพ่อ"
+            />
+            {errors.fatherName && (
+              <p className="text-red-500 text-sm">{errors.fatherName.message}</p>
+            )}
+          </div>
+
+          {/* Image URL */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              <Camera className="inline w-4 h-4 mr-1" />
+              URL รูปภาพ
+            </label>
+            <input
+              {...register('imageUrl')}
+              type="url"
+              className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
+              placeholder="https://example.com/image.jpg"
+            />
+            {errors.imageUrl && (
+              <p className="text-red-500 text-sm">{errors.imageUrl.message}</p>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex space-x-3 pt-4">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="flex-1 px-4 py-3 bg-[#e0e0e0] text-[#666666] rounded-[25px] font-medium hover:bg-[#d0d0d0] transition-colors"
+            >
+              ยกเลิก
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 px-4 py-3 bg-[#f39c12] text-white rounded-[25px] font-medium hover:bg-[#e67e22] disabled:bg-gray-400 transition-colors"
+            >
+              {isSubmitting ? 'กำลังบันทึก...' : (mode === 'create' ? 'เพิ่มสัตว์' : 'บันทึกการแก้ไข')}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}

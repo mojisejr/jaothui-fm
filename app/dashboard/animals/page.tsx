@@ -90,9 +90,18 @@ export default function AnimalsPage() {
       </div>
 
       {/* Content Area */}
-      <div className="bg-white p-5 min-h-screen">
+      <div className="bg-white p-5 min-h-screen pb-24">
         {activeTab === 'animals' && (
           <div className="space-y-4">
+            {/* Add Animal Button */}
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => router.push('/dashboard/animals/add')}
+                className="bg-[#f39c12] text-white px-6 py-2 rounded-[25px] font-medium hover:bg-[#e67e22] transition-colors"
+              >
+                + เพิ่มสัตว์ใหม่
+              </button>
+            </div>
             {loading ? (
               <div className="flex justify-center items-center py-8">
                 <div className="text-gray-500">กำลังโหลด...</div>

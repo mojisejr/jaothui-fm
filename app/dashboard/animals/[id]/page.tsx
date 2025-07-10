@@ -247,7 +247,10 @@ export default function AnimalDetailPage() {
 
         {/* Update Button */}
         <div className="px-2">
-          <button className="w-full bg-[#f39c12] text-white py-4 rounded-[25px] font-bold text-base hover:bg-[#e67e22] transition-colors">
+          <button 
+            onClick={() => router.push(`/dashboard/animals/${animal.id}/edit`)}
+            className="w-full bg-[#f39c12] text-white py-4 rounded-[25px] font-bold text-base hover:bg-[#e67e22] transition-colors"
+          >
             อัปเดตข้อมูล{getAnimalTypeDisplay(animal.animalType)}
           </button>
         </div>
