@@ -7,7 +7,7 @@ export default async function DashboardPage() {
   const profile = await getOrCreateProfile();
   
   if (!profile) {
-    redirect('/sign-in');
+    redirect('/profile/complete');
   }
 
   const farm = profile.ownedFarms[0]; // Get the first farm

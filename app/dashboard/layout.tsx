@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react";
-import { SignOutButton, currentUser } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
 
 export default async function DashboardLayout({
   children,
