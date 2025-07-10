@@ -16,16 +16,41 @@ const animalFormSchema = z.object({
     .min(1, 'กรุณาระบุชื่อสัตว์')
     .max(100, 'ชื่อสัตว์ต้องไม่เกิน 100 ตัวอักษร'),
   animalId: z.string()
-    .min(1, 'กรุณาระบุรหัสสัตว์')
-    .length(11, 'รหัสสัตว์ต้องเป็น 11 ตัวอักษร'),
-  sex: z.enum(['MALE', 'FEMALE']).optional(),
-  birthDate: z.string().optional(),
-  color: z.string().max(50, 'สีต้องไม่เกิน 50 ตัวอักษร').optional(),
-  weightKg: z.union([z.number().positive('น้ำหนักต้องมากกว่า 0'), z.literal('')]).optional().transform(val => val === '' ? undefined : val),
-  heightCm: z.union([z.number().positive('ความสูงต้องมากกว่า 0'), z.literal('')]).optional().transform(val => val === '' ? undefined : val),
-  motherName: z.string().max(100, 'ชื่อแม่ต้องไม่เกิน 100 ตัวอักษร').optional(),
-  fatherName: z.string().max(100, 'ชื่อพ่อต้องไม่เกิน 100 ตัวอักษร').optional(),
-  imageUrl: z.string().url('URL รูปภาพไม่ถูกต้อง').optional().or(z.literal('')),
+    .min(6, 'รหัสสัตว์ต้องมีอย่างน้อย 6 ตัวอักษร')
+    .max(50, 'รหัสสัตว์ต้องไม่เกิน 50 ตัวอักษร')
+    .trim(),
+  sex: z.preprocess(
+    (val) => val === '' ? undefined : val,
+    z.enum(['MALE', 'FEMALE']).optional()
+  ),
+  birthDate: z.preprocess(
+    (val) => val === '' ? undefined : val,
+    z.string().optional()
+  ),
+  color: z.preprocess(
+    (val) => val === '' ? undefined : val,
+    z.string().max(50, 'สีต้องไม่เกิน 50 ตัวอักษร').optional()
+  ),
+  weightKg: z.preprocess(
+    (val) => val === '' || val === null || val === undefined ? undefined : Number(val),
+    z.number().positive('น้ำหนักต้องมากกว่า 0').optional()
+  ),
+  heightCm: z.preprocess(
+    (val) => val === '' || val === null || val === undefined ? undefined : Number(val),
+    z.number().positive('ความสูงต้องมากกว่า 0').optional()
+  ),
+  motherName: z.preprocess(
+    (val) => val === '' ? undefined : val,
+    z.string().max(100, 'ชื่อแม่ต้องไม่เกิน 100 ตัวอักษร').optional()
+  ),
+  fatherName: z.preprocess(
+    (val) => val === '' ? undefined : val,
+    z.string().max(100, 'ชื่อพ่อต้องไม่เกิน 100 ตัวอักษร').optional()
+  ),
+  imageUrl: z.preprocess(
+    (val) => val === '' || val === null || val === undefined ? undefined : val,
+    z.string().url('กรุณาใส่ URL รูปภาพที่ถูกต้อง (เช่น https://example.com/image.jpg)').optional()
+  ),
   farmId: z.string().optional() // Optional for form, will be added by parent component
 })
 
@@ -182,7 +207,7 @@ export default function AnimalForm({
                 {...register('animalId')}
                 type="text"
                 className="flex-1 px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
-                placeholder="รหัสสัตว์ 11 ตัวอักษร"
+                placeholder="รหัสสัตว์ (อย่างน้อย 6 ตัวอักษร)"
                 disabled={mode === 'edit'}
               />
               {mode === 'create' && (
@@ -277,7 +302,9 @@ export default function AnimalForm({
               น้ำหนัก (กิโลกรัม)
             </label>
             <input
-              {...register('weightKg', { valueAsNumber: true })}
+              {...register('weightKg', { 
+                setValueAs: (value) => value === '' ? undefined : parseFloat(value) || undefined
+              })}
               type="number"
               className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
               placeholder="น้ำหนัก"
@@ -294,7 +321,9 @@ export default function AnimalForm({
               ความสูง (เซนติเมตร)
             </label>
             <input
-              {...register('heightCm', { valueAsNumber: true })}
+              {...register('heightCm', { 
+                setValueAs: (value) => value === '' ? undefined : parseFloat(value) || undefined
+              })}
               type="number"
               className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
               placeholder="ความสูง"
@@ -348,7 +377,7 @@ export default function AnimalForm({
               {...register('imageUrl')}
               type="url"
               className="w-full px-3 py-2 bg-[#f5f5f5] border rounded-[15px] focus:outline-none focus:ring-2 focus:ring-[#f39c12]"
-              placeholder="https://example.com/image.jpg"
+              placeholder="https://example.com/image.jpg (ไม่บังคับ)"
             />
             {errors.imageUrl && (
               <p className="text-red-500 text-sm">{errors.imageUrl.message}</p>

@@ -128,19 +128,20 @@ export async function submitAnimalForm(
       : `/api/animals/${animalId}`
     
     const method = mode === 'create' ? 'POST' : 'PUT'
+    const transformedData = transformFormDataToApi(data)
     
     const response = await fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(transformFormDataToApi(data))
+      body: JSON.stringify(transformedData)
     })
     
     const result = await response.json()
     
     if (!response.ok) {
-      return { success: false, error: result.error || 'เกิดข้อผิดพลาด' }
+      return { success: false, error: result.error || result.message || 'เกิดข้อผิดพลาด' }
     }
     
     return { success: true, data: result.data }

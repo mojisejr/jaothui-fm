@@ -20,11 +20,11 @@ export default function AddAnimalPage() {
       const farmResponse = await fetch('/api/farms')
       const farmData = await farmResponse.json()
       
-      if (!farmData.success || !farmData.data.data.length) {
-        throw new Error('ไม่พบข้อมูลฟาร์ม')
+      if (!farmData.success || !farmData.data || !Array.isArray(farmData.data) || farmData.data.length === 0) {
+        throw new Error('ไม่พบข้อมูลฟาร์ม กรุณาสร้างฟาร์มก่อนเพิ่มสัตว์')
       }
 
-      const farmId = farmData.data.data[0].id
+      const farmId = farmData.data[0].id
 
       // Submit animal data
       const result = await submitAnimalForm({

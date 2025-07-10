@@ -72,8 +72,9 @@ export const createAnimalSchema = z.object({
     .max(100, 'Animal name must be less than 100 characters')
     .trim(),
   animalId: z.string()
-    .length(11, 'Animal ID must be exactly 11 characters')
-    .regex(/^[A-Z]{2}\d{8}\d{3}$/, 'Invalid animal ID format')
+    .min(6, 'Animal ID must be at least 6 characters')
+    .max(50, 'Animal ID must be less than 50 characters')
+    .trim()
     .optional(),
   sex: sexSchema.optional(),
   birthDate: dateStringSchema.optional(),
