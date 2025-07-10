@@ -235,8 +235,8 @@ export async function POST(request: NextRequest) {
     let finalAnimalId: string
     
     if (providedAnimalId) {
-      // Validate provided animal ID
-      const validation = validateAnimalId(providedAnimalId, animalType)
+      // Validate provided animal ID (flexible validation)
+      const validation = validateAnimalId(providedAnimalId)
       if (!validation.isValid) {
         return NextResponse.json<ApiResponse>({ 
           success: false, 

@@ -256,39 +256,7 @@ export const pushSubscriptionSchema = z.object({
 })
 
 // Validation utility functions
-export function validateAnimalId(animalId: string, animalType: AnimalType): {
-  isValid: boolean
-  error?: string
-} {
-  const typeCodeMap: Record<AnimalType, string> = {
-    BUFFALO: 'BF',
-    CHICKEN: 'CK',
-    COW: 'CW',
-    PIG: 'PG',
-    HORSE: 'HR'
-  }
-  
-  if (animalId.length !== 11) {
-    return { isValid: false, error: 'Animal ID must be exactly 11 characters' }
-  }
-  
-  const expectedTypeCode = typeCodeMap[animalType]
-  const actualTypeCode = animalId.substring(0, 2)
-  
-  if (actualTypeCode !== expectedTypeCode) {
-    return { 
-      isValid: false, 
-      error: `Expected type code ${expectedTypeCode} for ${animalType} but got ${actualTypeCode}` 
-    }
-  }
-  
-  const pattern = /^[A-Z]{2}\d{8}\d{3}$/
-  if (!pattern.test(animalId)) {
-    return { isValid: false, error: 'Invalid animal ID format' }
-  }
-  
-  return { isValid: true }
-}
+// Note: Animal ID validation moved to lib/animal-id.ts
 
 export function validateDateRange(fromDate: string, toDate: string): {
   isValid: boolean

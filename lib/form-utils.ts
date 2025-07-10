@@ -63,7 +63,8 @@ export function formatDisplayDate(date: Date | string | null): string {
 
 // Form validation helpers
 export function validateAnimalId(animalId: string): boolean {
-  return /^[A-Z]{2}\d{8}\d{3}$/.test(animalId)
+  // Flexible validation: minimum 6 characters, alphanumeric only
+  return animalId.length >= 6 && animalId.length <= 50 && /^[A-Za-z0-9]+$/.test(animalId)
 }
 
 export function validatePhoneNumber(phone: string): boolean {

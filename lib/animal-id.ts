@@ -56,18 +56,46 @@ export function generateAnimalId(
 }
 
 /**
- * Validate animal ID format
+ * Validate animal ID format - flexible validation for manual input
+ * @param animalId - The animal ID to validate
+ * @param animalType - The expected animal type (optional for flexible validation)
+ * @returns Validation result
+ */
+export function validateAnimalId(animalId: string): {
+  isValid: boolean
+  error?: string
+} {
+  // Basic length check (minimum 6 characters, maximum 50)
+  if (animalId.length < 6) {
+    return { isValid: false, error: 'Animal ID must be at least 6 characters long' }
+  }
+  
+  if (animalId.length > 50) {
+    return { isValid: false, error: 'Animal ID must be less than 50 characters' }
+  }
+  
+  // Check for valid characters (alphanumeric)
+  const validCharRegex = /^[A-Za-z0-9]+$/
+  if (!validCharRegex.test(animalId)) {
+    return { isValid: false, error: 'Animal ID can only contain letters and numbers' }
+  }
+  
+  return { isValid: true }
+}
+
+/**
+ * Validate auto-generated animal ID format (strict validation)
  * @param animalId - The animal ID to validate
  * @param animalType - The expected animal type
  * @returns Validation result
  */
-export function validateAnimalId(animalId: string, animalType: AnimalType): {
+export function validateGeneratedAnimalId(animalId: string, animalType: AnimalType): {
   isValid: boolean
   error?: string
 } {
   // Check length (11 characters: 2 type + 8 date + 3 sequence)
   if (animalId.length !== 11) {
-    return { isValid: false, error: 'Animal ID must be 11 characters long' }
+    return { isValid: false, error: 'Generated Animal ID must be 11 characters long' }
   }
   
   // Check type code
@@ -84,14 +112,14 @@ export function validateAnimalId(animalId: string, animalType: AnimalType): {
   const datePart = animalId.substring(2, 10)
   const dateRegex = /^\d{8}$/
   if (!dateRegex.test(datePart)) {
-    return { isValid: false, error: 'Invalid date format in animal ID' }
+    return { isValid: false, error: 'Invalid date format in generated animal ID' }
   }
   
   // Check sequence format (3 digits)
   const sequencePart = animalId.substring(10, 13)
   const sequenceRegex = /^\d{3}$/
   if (!sequenceRegex.test(sequencePart)) {
-    return { isValid: false, error: 'Invalid sequence format in animal ID' }
+    return { isValid: false, error: 'Invalid sequence format in generated animal ID' }
   }
   
   return { isValid: true }
