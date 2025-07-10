@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { currentUser } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 import { ApiResponse, AnimalWithFarm } from '@/lib/types'
 
@@ -8,8 +8,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = await currentUser()
-    if (!user) {
+    const { userId } = await auth()
+    if (!userId) {
       return NextResponse.json<ApiResponse>({ 
         success: false, 
         error: 'Unauthorized' 
@@ -20,7 +20,7 @@ export async function GET(
 
     // Get user profile to verify access
     const profile = await prisma.profile.findUnique({
-      where: { clerkUserId: user.id },
+      where: { clerkUserId: userId },
       include: {
         ownedFarms: { select: { id: true } },
         farmMemberships: { select: { farmId: true } }

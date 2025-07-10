@@ -1,6 +1,4 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server'
-import { currentUser } from '@clerk/nextjs/server'
 
 // Define public routes that don't require authentication
 const isPublicRoute = createRouteMatcher([
@@ -31,29 +29,8 @@ export default clerkMiddleware(async (auth, req) => {
   // Protect all other routes
   await auth.protect()
 
-  // For protected routes, check if user needs to complete profile
-  const { userId } = await auth()
-  if (userId) {
-    try {
-      const user = await currentUser()
-      
-      // Check if user has required profile fields
-      const hasRequiredData = user && 
-        user.firstName && 
-        user.lastName && 
-        user.phoneNumbers && 
-        user.phoneNumbers.length > 0
-
-      // If missing required data, redirect to profile completion
-      if (!hasRequiredData) {
-        const profileCompleteUrl = new URL('/profile/complete', req.url)
-        return NextResponse.redirect(profileCompleteUrl)
-      }
-    } catch (error) {
-      // If check fails, let the request proceed to avoid breaking the app
-      console.error('Profile check failed in middleware:', error)
-    }
-  }
+  // For protected routes, let the route handlers handle profile checks
+  // to avoid middleware complexity and potential auth issues
 })
 
 export const config = {

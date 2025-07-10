@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { currentUser } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 import { createAnimalSchema, animalFiltersSchema } from '@/lib/validations'
 import { generateAnimalId, validateAnimalId } from '@/lib/animal-id'
@@ -7,8 +7,8 @@ import { ApiResponse, AnimalWithFarm, PaginatedResponse } from '@/lib/types'
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await currentUser()
-    if (!user) {
+    const { userId } = await auth()
+    if (!userId) {
       return NextResponse.json<ApiResponse>({ 
         success: false, 
         error: 'Unauthorized' 
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 
     // Get user profile to verify access
     const profile = await prisma.profile.findUnique({
-      where: { clerkUserId: user.id },
+      where: { clerkUserId: userId },
       include: {
         ownedFarms: { select: { id: true } },
         farmMemberships: { select: { farmId: true } }
@@ -173,8 +173,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await currentUser()
-    if (!user) {
+    const { userId } = await auth()
+    if (!userId) {
       return NextResponse.json<ApiResponse>({ 
         success: false, 
         error: 'Unauthorized' 
@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
 
     // Get user profile
     const profile = await prisma.profile.findUnique({
-      where: { clerkUserId: user.id },
+      where: { clerkUserId: userId },
       include: {
         ownedFarms: { select: { id: true } },
         farmMemberships: { 
