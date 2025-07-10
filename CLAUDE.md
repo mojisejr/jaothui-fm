@@ -94,12 +94,12 @@ model Activity {
 - **Buttons**: 25px border-radius, 15px padding, orange primary
 - **Typography**: 16px base, heading 24px, secondary 14px
 
-## Development Approach: 8 Paired Sub-Agent Rounds
+## Development Approach: 9 Paired Sub-Agent Rounds
 
 ### Round Structure & Dependencies:
 
 ```
-R1: Foundation → R2: Auth+DB → R3: Pages → R4: API → R5: Animal UI → R6: CRUD → R7: Activities → R8: Notifications
+R1: Foundation → R2: Auth+DB → R3: Pages → R3.5: Profile Flow → R4: API → R5: Animal UI → R6: CRUD → R7: Activities → R8: Notifications
 ```
 
 ### Enhanced Round Prompts:
@@ -177,6 +177,33 @@ TESTING PROTOCOL:
 4. Test navigation flow: home → login → dashboard
 
 COMMIT: "feat: create core page structure with mobile-first responsive design"
+```
+
+#### Round 3.5: Profile Completion Flow
+
+```
+อ่าน CLAUDE.md และทำ Round 3.5: Profile Completion Flow ตาม paired sub-agent pattern
+
+TASK BREAKDOWN:
+- Task A: Profile completion page following register-page.json (dependencies: Round 3 completed)
+- Task B: API routes + middleware updates for profile flow (dependencies: Task A components)
+
+ACCEPTANCE CRITERIA CHECKLIST:
+□ Users without phone numbers redirect to /profile/complete
+□ Profile completion form matches register-page.json exactly
+□ Form validates required fields (firstName, lastName, phoneNumber)
+□ Successful completion redirects to dashboard
+□ Webhook gracefully handles missing phone numbers
+□ LINE login users can complete profile seamlessly
+
+TESTING PROTOCOL:
+1. Sign up new user via email → redirects to profile completion
+2. Sign up via LINE → redirects to profile completion  
+3. Complete profile form → redirects to dashboard
+4. Test validation with empty/invalid phone numbers
+5. Verify existing complete users skip to dashboard
+
+COMMIT: "feat: implement profile completion flow for users missing required information"
 ```
 
 #### Round 4: Database Models & API

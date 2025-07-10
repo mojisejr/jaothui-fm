@@ -1,6 +1,14 @@
 .env.local
 .env
 /node_modules
+.next
+
 
 
 .DS_Store   
+
+# Development Documentation (exclude from git)
+PROGRESS.md
+TECHNICAL-SPECS.md
+TESTING-PROTOCOLS.md
+UI-GUIDELINES.md
