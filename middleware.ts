@@ -11,9 +11,10 @@ const isPublicRoute = createRouteMatcher([
   '/api/cron/(.*)',
 ])
 
-// Define profile completion route
+// Define profile completion and success routes
 const isProfileCompletionRoute = createRouteMatcher([
   '/profile/complete',
+  '/profile/success',
   '/api/profile/complete',
 ])
 
@@ -21,7 +22,7 @@ export default clerkMiddleware(async (auth, req) => {
   // Allow public routes without authentication
   if (isPublicRoute(req)) return
 
-  // Allow profile completion routes for authenticated users
+  // Allow profile completion and success routes for authenticated users
   if (isProfileCompletionRoute(req)) {
     await auth.protect()
     return

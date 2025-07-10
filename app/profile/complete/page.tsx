@@ -48,8 +48,8 @@ export default function ProfileCompletePage() {
         throw new Error(errorData.error || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล')
       }
 
-      // Redirect to dashboard on success
-      router.push('/dashboard')
+      // Redirect to success page on successful profile completion
+      router.push('/profile/success')
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'เกิดข้อผิดพลาดที่ไม่คาดคิด')
     } finally {
