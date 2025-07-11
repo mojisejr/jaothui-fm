@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Calendar, Clock, FileText, AlertCircle, X } from 'lucide-react'
+import { toast } from 'sonner'
 import { 
   saveActivityType, 
   getActivityTypeSuggestions, 
@@ -22,7 +23,16 @@ const activityFormSchema = z.object({
     .optional(),
   activityDate: z.string()
     .min(1, 'กรุณาระบุวันที่กิจกรรม'),
-  reminderDate: z.string().optional(),
+  reminderDate: z.preprocess(
+    (value) => {
+      // Convert empty string to undefined
+      if (typeof value === 'string' && value.trim() === '') {
+        return undefined
+      }
+      return value
+    },
+    z.string().optional()
+  ),
   animalId: z.string()
     .min(1, 'กรุณาระบุสัตว์'),
   farmId: z.string()
@@ -120,8 +130,16 @@ export default function ActivityForm({
       
       await onSubmit(data)
       reset()
+      toast.success('บันทึกกิจกรรมเรียบร้อยแล้ว')
     } catch (error) {
       console.error('Error submitting activity:', error)
+      
+      // Show user-friendly error message
+      if (error instanceof Error) {
+        toast.error(`ไม่สามารถบันทึกกิจกรรมได้: ${error.message}`)
+      } else {
+        toast.error('ไม่สามารถบันทึกกิจกรรมได้ กรุณาลองใหม่อีกครั้ง')
+      }
     }
   }
 

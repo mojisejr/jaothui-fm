@@ -106,14 +106,36 @@ export default function AnimalDetailPage() {
 
       if (result.success) {
         setShowActivityForm(false)
-        // Could add success notification here
+        // Success is handled by the ActivityForm component
         console.log('Activity created successfully')
       } else {
-        throw new Error(result.error || 'Failed to create activity')
+        // Provide detailed error message
+        let errorMessage = 'ไม่สามารถบันทึกกิจกรรมได้'
+        
+        if (result.error) {
+          // Handle specific validation errors
+          if (result.error.includes('Invalid date format')) {
+            errorMessage = 'รูปแบบวันที่ไม่ถูกต้อง กรุณาตรวจสอบวันที่กิจกรรมและวันที่แจ้งเตือน'
+          } else if (result.error.includes('Animal not found')) {
+            errorMessage = 'ไม่พบข้อมูลสัตว์ที่ระบุ'
+          } else if (result.error.includes('Unauthorized')) {
+            errorMessage = 'ไม่มีสิทธิ์ในการเข้าถึงข้อมูล'
+          } else {
+            errorMessage = result.error
+          }
+        }
+        
+        throw new Error(errorMessage)
       }
     } catch (error) {
       console.error('Error creating activity:', error)
-      // Could add error notification here
+      
+      // Re-throw to be handled by the ActivityForm component
+      if (error instanceof Error) {
+        throw error
+      } else {
+        throw new Error('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง')
+      }
     } finally {
       setIsSubmittingActivity(false)
     }

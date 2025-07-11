@@ -3,9 +3,31 @@ import { AnimalType, Sex, AnimalStatus, ActivityStatus } from '@prisma/client'
 
 // Common validation schemas
 const uuidSchema = z.string().uuid('Invalid UUID format')
-const dateStringSchema = z.string().refine(
-  (date) => !isNaN(Date.parse(date)),
-  'Invalid date format'
+const dateStringSchema = z.preprocess(
+  (value) => {
+    // Convert empty string to undefined for optional fields
+    if (typeof value === 'string' && value.trim() === '') {
+      return undefined
+    }
+    return value
+  },
+  z.string().refine(
+    (date) => !isNaN(Date.parse(date)),
+    'Invalid date format'
+  )
+)
+const optionalDateStringSchema = z.preprocess(
+  (value) => {
+    // Convert empty string to undefined for optional fields
+    if (typeof value === 'string' && value.trim() === '') {
+      return undefined
+    }
+    return value
+  },
+  z.string().refine(
+    (date) => !isNaN(Date.parse(date)),
+    'Invalid date format'
+  ).optional()
 )
 const positiveIntSchema = z.number().int().positive('Must be a positive integer')
 const optionalPositiveIntSchema = z.number().int().positive().optional()
@@ -138,7 +160,7 @@ export const createActivitySchema = z.object({
     .trim()
     .optional(),
   activityDate: dateStringSchema,
-  reminderDate: dateStringSchema.optional()
+  reminderDate: optionalDateStringSchema
 }).refine(
   (data) => {
     if (data.reminderDate && data.activityDate) {
@@ -164,8 +186,8 @@ export const updateActivitySchema = z.object({
     .max(1000, 'Description must be less than 1000 characters')
     .trim()
     .optional(),
-  activityDate: dateStringSchema.optional(),
-  reminderDate: dateStringSchema.optional(),
+  activityDate: optionalDateStringSchema,
+  reminderDate: optionalDateStringSchema,
   status: activityStatusSchema.optional()
 }).refine(
   (data) => {
