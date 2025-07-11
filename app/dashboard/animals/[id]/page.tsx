@@ -3,11 +3,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { AnimalWithFarm, ApiResponse } from '@/lib/types'
-import { AnimalType, Sex } from '@prisma/client'
+import { AnimalType, Sex, Activity } from '@prisma/client'
 import { format } from 'date-fns'
-import { Search, Calendar, Hash, Heart, Users, Palette, Trophy, Ruler, ChevronLeft, Plus, Activity } from 'lucide-react'
+import { Search, Calendar, Hash, Heart, Users, Palette, Trophy, Ruler, ChevronLeft, Plus, Activity as ActivityIcon } from 'lucide-react'
 import Link from 'next/link'
 import ActivityForm, { ActivityFormData } from '@/components/forms/activity-form'
+import ActivityHistorySection from '@/components/ui/activity-history-section'
 
 export default function AnimalDetailPage() {
   const params = useParams()
@@ -18,6 +19,8 @@ export default function AnimalDetailPage() {
   const [activeTab, setActiveTab] = useState<'PED' | 'ART'>('PED')
   const [showActivityForm, setShowActivityForm] = useState(false)
   const [isSubmittingActivity, setIsSubmittingActivity] = useState(false)
+  const [initialActivities, setInitialActivities] = useState<Activity[]>([])
+  const [activitiesLoading, setActivitiesLoading] = useState(true)
 
   const fetchAnimal = useCallback(async () => {
     try {
@@ -37,11 +40,36 @@ export default function AnimalDetailPage() {
     }
   }, [params.id])
 
+  const fetchInitialActivities = useCallback(async () => {
+    if (!params.id) return
+    
+    try {
+      setActivitiesLoading(true)
+      const response = await fetch(`/api/activities?animalId=${params.id}&limit=5&sortBy=activityDate&sortOrder=desc`)
+      const result = await response.json()
+      
+      if (response.ok && result.success && result.data) {
+        // Handle paginated response format
+        const activities = result.data.data || result.data
+        setInitialActivities(activities)
+      } else {
+        console.warn('Failed to fetch initial activities:', result.error)
+        setInitialActivities([])
+      }
+    } catch (err) {
+      console.warn('Error fetching initial activities:', err)
+      setInitialActivities([])
+    } finally {
+      setActivitiesLoading(false)
+    }
+  }, [params.id])
+
   useEffect(() => {
     if (params.id) {
       fetchAnimal()
+      fetchInitialActivities()
     }
-  }, [params.id, fetchAnimal])
+  }, [params.id, fetchAnimal, fetchInitialActivities])
 
   const getAnimalTypeDisplay = (type: AnimalType) => {
     const typeMap = {
@@ -106,6 +134,8 @@ export default function AnimalDetailPage() {
 
       if (result.success) {
         setShowActivityForm(false)
+        // Refresh activities after successful creation
+        fetchInitialActivities()
         // Success is handled by the ActivityForm component
         console.log('Activity created successfully')
       } else {
@@ -328,6 +358,29 @@ export default function AnimalDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Activity History Section */}
+        {!activitiesLoading && (
+          <ActivityHistorySection 
+            animalId={params.id as string}
+            initialActivities={initialActivities}
+          />
+        )}
+
+        {/* Loading indicator for activities */}
+        {activitiesLoading && (
+          <div className="bg-white rounded-[15px] p-5 shadow-sm">
+            <div className="text-center py-8">
+              <div className="inline-flex items-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#f39c12]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span className="text-gray-600">กำลังโหลดประวัติกิจกรรม...</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="space-y-3 px-2">

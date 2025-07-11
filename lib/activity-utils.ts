@@ -160,6 +160,124 @@ export function getActivityStatusColor(status: string): string {
 }
 
 /**
+ * Activity type icons following UI-GUIDELINES.md emoji-based system
+ */
+const ACTIVITY_TYPE_ICONS = {
+  'ตรวจสุขภาพ': '🏥',
+  'ให้อาหาร': '🥬',
+  'ฉีดวัคซีน': '💉',
+  'ทำความสะอาด': '🧽',
+  'ออกกำลังกาย': '🏃',
+  'อาบน้ำ': '🚿',
+  'ตรวจการเจริญเติบโต': '📏',
+  'ผสมพันธุ์': '❤️',
+  'คลอดลูก': '🐣',
+  'รักษาโรค': '⚕️',
+  'ตัดขน': '✂️',
+  'ตัดเล็บ': '💅',
+  'ฝึกวินัย': '🎯',
+  'ขาย': '💰',
+  'ซื้อ': '🛒',
+  'default': '📝'
+} as const;
+
+/**
+ * Get activity type icon based on activity title
+ */
+export function getActivityTypeIcon(title: string): string {
+  // Check exact matches first
+  for (const [key, icon] of Object.entries(ACTIVITY_TYPE_ICONS)) {
+    if (key !== 'default' && title.includes(key)) {
+      return icon;
+    }
+  }
+  
+  // Check for common keywords
+  const lowerTitle = title.toLowerCase();
+  
+  if (lowerTitle.includes('สุขภาพ') || lowerTitle.includes('ตรวจ')) {
+    return ACTIVITY_TYPE_ICONS['ตรวจสุขภาพ'];
+  }
+  if (lowerTitle.includes('อาหาร') || lowerTitle.includes('ให้') || lowerTitle.includes('เลี้ยง')) {
+    return ACTIVITY_TYPE_ICONS['ให้อาหาร'];
+  }
+  if (lowerTitle.includes('วัคซีน') || lowerTitle.includes('ฉีด')) {
+    return ACTIVITY_TYPE_ICONS['ฉีดวัคซีน'];
+  }
+  if (lowerTitle.includes('สะอาด') || lowerTitle.includes('ทำความ')) {
+    return ACTIVITY_TYPE_ICONS['ทำความสะอาด'];
+  }
+  if (lowerTitle.includes('กำลัง') || lowerTitle.includes('ออก') || lowerTitle.includes('วิ่ง')) {
+    return ACTIVITY_TYPE_ICONS['ออกกำลังกาย'];
+  }
+  if (lowerTitle.includes('อาบ') || lowerTitle.includes('น้ำ')) {
+    return ACTIVITY_TYPE_ICONS['อาบน้ำ'];
+  }
+  if (lowerTitle.includes('เจริญ') || lowerTitle.includes('วัด') || lowerTitle.includes('นิ้ว')) {
+    return ACTIVITY_TYPE_ICONS['ตรวจการเจริญเติบโต'];
+  }
+  if (lowerTitle.includes('ผสม') || lowerTitle.includes('พันธุ์')) {
+    return ACTIVITY_TYPE_ICONS['ผสมพันธุ์'];
+  }
+  if (lowerTitle.includes('คลอด') || lowerTitle.includes('ลูก') || lowerTitle.includes('เกิด')) {
+    return ACTIVITY_TYPE_ICONS['คลอดลูก'];
+  }
+  if (lowerTitle.includes('รักษา') || lowerTitle.includes('โรค') || lowerTitle.includes('ยา')) {
+    return ACTIVITY_TYPE_ICONS['รักษาโรค'];
+  }
+  if (lowerTitle.includes('ตัด') && lowerTitle.includes('ขน')) {
+    return ACTIVITY_TYPE_ICONS['ตัดขน'];
+  }
+  if (lowerTitle.includes('ตัด') && lowerTitle.includes('เล็บ')) {
+    return ACTIVITY_TYPE_ICONS['ตัดเล็บ'];
+  }
+  if (lowerTitle.includes('ฝึก') || lowerTitle.includes('วินัย')) {
+    return ACTIVITY_TYPE_ICONS['ฝึกวินัย'];
+  }
+  if (lowerTitle.includes('ขาย')) {
+    return ACTIVITY_TYPE_ICONS['ขาย'];
+  }
+  if (lowerTitle.includes('ซื้อ')) {
+    return ACTIVITY_TYPE_ICONS['ซื้อ'];
+  }
+  
+  return ACTIVITY_TYPE_ICONS.default;
+}
+
+/**
+ * Status colors following UI-GUIDELINES.md color system
+ */
+const STATUS_COLORS = {
+  PENDING: '#f1c40f',    // Yellow
+  IN_PROGRESS: '#3498db', // Blue
+  COMPLETED: '#2ecc71',  // Green
+  CANCELLED: '#e74c3c',  // Red
+  OVERDUE: '#e67e22'     // Orange
+} as const;
+
+/**
+ * Get activity status color (enhanced version)
+ */
+export function getActivityStatusColorEnhanced(status: string): string {
+  return STATUS_COLORS[status as keyof typeof STATUS_COLORS] || STATUS_COLORS.PENDING;
+}
+
+/**
+ * Get status badge class name for styling
+ */
+export function getActivityStatusBadgeClass(status: string): string {
+  const classMap: Record<string, string> = {
+    'PENDING': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    'IN_PROGRESS': 'bg-blue-100 text-blue-800 border-blue-200',
+    'COMPLETED': 'bg-green-100 text-green-800 border-green-200',
+    'CANCELLED': 'bg-red-100 text-red-800 border-red-200',
+    'OVERDUE': 'bg-orange-100 text-orange-800 border-orange-200'
+  };
+  
+  return classMap[status] || classMap.PENDING;
+}
+
+/**
  * Validate activity form data
  */
 export function validateActivityForm(data: ActivityFormData): string[] {

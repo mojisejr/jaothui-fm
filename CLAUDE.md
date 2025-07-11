@@ -99,7 +99,7 @@ model Activity {
 ### Round Structure & Dependencies:
 
 ```
-R1: Foundation → R2: Auth+DB → R3: Pages → R3.5: Profile Flow → R4: API → R5: Animal UI → R6: CRUD → R7: Activities → R8: Notifications
+R1: Foundation → R2: Auth+DB → R3: Pages → R3.5: Profile Flow → R4: API → R5: Animal UI → R6: CRUD → R7: Activities → R7.1: Bug Fix → R7.2: History → R8: Notifications
 ```
 
 ### Enhanced Round Prompts:
@@ -327,6 +327,60 @@ TESTING PROTOCOL:
 4. Test status updates and postpone functionality
 
 COMMIT: "feat: implement activity tracking and reminder management system"
+```
+
+#### Round 7.1: Activity Form Bug Fix
+
+```
+อ่าน CLAUDE.md และทำ Round 7.1: Activity Form Bug Fix ตาม micro-enhancement pattern
+
+TASK BREAKDOWN:
+- Task A: Fix date validation schema in lib/validations.ts (dependencies: Round 7 completed)
+- Task B: Add toast notification system with Sonner (dependencies: Task A validation fixes)
+
+ACCEPTANCE CRITERIA CHECKLIST:
+□ Activity creation works with empty reminder dates
+□ Toast notifications display for success and error states
+□ Form loading states provide proper user feedback
+□ Date validation handles all edge cases correctly
+□ Mobile responsive design maintained (400px max-width)
+
+TESTING PROTOCOL:
+1. Create activity with empty reminder date → no validation error
+2. Create activity with invalid data → toast error displays
+3. Create activity successfully → toast success displays
+4. Test form loading states → proper feedback shown
+5. Verify mobile layout at 400px width
+
+COMMIT: "fix: resolve activity form date validation and add toast notification system"
+```
+
+#### Round 7.2: Activity History Enhancement
+
+```
+อ่าน CLAUDE.md และทำ Round 7.2: Activity History Enhancement ตาม paired sub-agent pattern
+
+TASK BREAKDOWN:
+- Task A: Create ActivityHistoryCard component following buffalo_card pattern (dependencies: Round 7.1 completed)
+- Task B: Implement ActivityHistorySection with load more functionality (dependencies: Task A components)
+
+ACCEPTANCE CRITERIA CHECKLIST:
+□ ActivityHistoryCard follows buffalo_card design exactly
+□ Activity type icons display correctly with emoji mapping
+□ Load more pattern works with 5 activities per page
+□ Status indicators show correct colors for activity states
+□ Mobile responsive design verified (400px max-width)
+□ Integration with animal detail pages functions properly
+
+TESTING PROTOCOL:
+1. Create test activities for animal → history displays in detail page
+2. Verify card styling matches buffalo_card pattern exactly
+3. Test load more functionality → loads additional activities
+4. Check activity type icons → correct emojis display
+5. Test status indicators → correct colors for each status
+6. Verify mobile layout at 400px width
+
+COMMIT: "feat: implement activity history display following buffalo_card pattern"
 ```
 
 #### Round 8: Notification System
