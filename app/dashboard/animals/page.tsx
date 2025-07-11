@@ -49,9 +49,15 @@ export default function AnimalsPage() {
     return typeMap[type] || type
   }
 
-  const getAnimalImage = (type: AnimalType) => {
-    // Return a placeholder for now - in production this would use the actual imageUrl
-    return '/buffalo_profile.jpg'
+  const getAnimalTypeIcon = (type: AnimalType) => {
+    const typeMap = {
+      BUFFALO: '🐃',
+      CHICKEN: '🐔',
+      COW: '🐄',
+      PIG: '🐷',
+      HORSE: '🐎'
+    }
+    return typeMap[type] || '🐾'
   }
 
   const formatDate = (date: Date | null) => {
@@ -121,15 +127,30 @@ export default function AnimalsPage() {
                 >
                   {/* Animal Image */}
                   <div className="w-16 h-16 bg-gray-200 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <img
-                      src={animal.imageUrl || getAnimalImage(animal.animalType)}
-                      alt={`${getAnimalTypeDisplay(animal.animalType)} ${animal.name}`}
-                      className="w-full h-full object-cover rounded-lg"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement
-                        target.src = '/buffalo_profile.jpg'
-                      }}
-                    />
+                    {animal.imageUrl ? (
+                      <img
+                        src={animal.imageUrl}
+                        alt={`${getAnimalTypeDisplay(animal.animalType)} ${animal.name}`}
+                        className="w-full h-full object-cover rounded-lg"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          const parent = target.parentElement
+                          if (parent) {
+                            parent.innerHTML = `
+                              <div class="w-full h-full bg-[#f5f5f5] rounded-lg flex flex-col items-center justify-center text-xs text-gray-600">
+                                <span class="text-lg mb-1">${getAnimalTypeIcon(animal.animalType)}</span>
+                                <span class="text-center font-medium">${animal.name}</span>
+                              </div>
+                            `
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#f5f5f5] rounded-lg flex flex-col items-center justify-center text-xs text-gray-600">
+                        <span className="text-lg mb-1">{getAnimalTypeIcon(animal.animalType)}</span>
+                        <span className="text-center font-medium">{animal.name}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Animal Info */}

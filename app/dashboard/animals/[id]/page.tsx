@@ -61,6 +61,17 @@ export default function AnimalDetailPage() {
     return format(new Date(date), 'dd-MM-yyyy')
   }
 
+  const getAnimalTypeIcon = (type: AnimalType) => {
+    const typeMap = {
+      BUFFALO: '🐃',
+      CHICKEN: '🐔',
+      COW: '🐄',
+      PIG: '🐷',
+      HORSE: '🐎'
+    }
+    return typeMap[type] || '🐾'
+  }
+
   const getIcon = (type: string) => {
     const iconMap: Record<string, JSX.Element> = {
       'buffalo': <Users className="w-5 h-5 text-[#f39c12]" />,
@@ -135,16 +146,33 @@ export default function AnimalDetailPage() {
       <div className="p-3 space-y-3">
         {/* Animal Image */}
         <div className="bg-white rounded-[15px] p-3">
-          <div className="w-full h-64 bg-gray-200 rounded-[15px] overflow-hidden">
-            <img
-              src={animal.imageUrl || '/buffalo_profile.jpg'}
-              alt={`${getAnimalTypeDisplay(animal.animalType)} ${animal.name}`}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement
-                target.src = '/buffalo_profile.jpg'
-              }}
-            />
+          <div className="w-full h-64 bg-gray-200 rounded-[15px] overflow-hidden flex items-center justify-center">
+            {animal.imageUrl ? (
+              <img
+                src={animal.imageUrl}
+                alt={`${getAnimalTypeDisplay(animal.animalType)} ${animal.name}`}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  const parent = target.parentElement
+                  if (parent) {
+                    parent.innerHTML = `
+                      <div class="w-full h-full bg-[#f5f5f5] rounded-[15px] flex flex-col items-center justify-center">
+                        <span class="text-6xl mb-4">${getAnimalTypeIcon(animal.animalType)}</span>
+                        <span class="text-xl font-bold text-gray-700">${animal.name}</span>
+                        <span class="text-sm text-gray-500 mt-2">${getAnimalTypeDisplay(animal.animalType)}</span>
+                      </div>
+                    `
+                  }
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-[#f5f5f5] rounded-[15px] flex flex-col items-center justify-center">
+                <span className="text-6xl mb-4">{getAnimalTypeIcon(animal.animalType)}</span>
+                <span className="text-xl font-bold text-gray-700">{animal.name}</span>
+                <span className="text-sm text-gray-500 mt-2">{getAnimalTypeDisplay(animal.animalType)}</span>
+              </div>
+            )}
           </div>
         </div>
 
