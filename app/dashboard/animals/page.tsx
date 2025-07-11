@@ -136,10 +136,6 @@ export default function AnimalsPage() {
     return format(new Date(date), 'dd/MM/yyyy')
   }
 
-  const pendingReminders = animals.filter(animal => 
-    animal.activities.some(activity => activity.reminderDate && activity.status === 'PENDING')
-  )
-
   return (
     <div className="min-h-screen bg-white">
       {/* Tab Navigation */}

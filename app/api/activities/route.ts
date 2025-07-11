@@ -32,7 +32,7 @@ export interface ActivityWithRelations extends Activity {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
     if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const profile = await getOrCreateProfile(userId)
+    const profile = await getOrCreateProfile()
     if (!profile) {
       return NextResponse.json(
         { success: false, error: 'Profile not found' },
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
     if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -153,7 +153,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const profile = await getOrCreateProfile(userId)
+    const profile = await getOrCreateProfile()
     if (!profile) {
       return NextResponse.json(
         { success: false, error: 'Profile not found' },
@@ -268,7 +268,7 @@ export async function GET(request: NextRequest) {
         pagination: {
           page,
           limit,
-          totalCount,
+          total: totalCount,
           totalPages,
           hasNext: page < totalPages,
           hasPrev: page > 1

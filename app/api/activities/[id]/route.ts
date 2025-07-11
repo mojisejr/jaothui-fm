@@ -11,7 +11,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
     if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -19,7 +19,7 @@ export async function GET(
       )
     }
 
-    const profile = await getOrCreateProfile(userId)
+    const profile = await getOrCreateProfile()
     if (!profile) {
       return NextResponse.json(
         { success: false, error: 'Profile not found' },
@@ -94,7 +94,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
     if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -102,7 +102,7 @@ export async function PUT(
       )
     }
 
-    const profile = await getOrCreateProfile(userId)
+    const profile = await getOrCreateProfile()
     if (!profile) {
       return NextResponse.json(
         { success: false, error: 'Profile not found' },
@@ -200,15 +200,14 @@ export async function PUT(
     // Handle reminder date changes
     if (validatedData.reminderDate !== undefined) {
       if (validatedData.reminderDate) {
-        // Update or create reminder
-        await prisma.activityReminder.upsert({
-          where: { activityId: params.id },
-          update: {
-            reminderDate: new Date(validatedData.reminderDate),
-            notificationSent: false,
-            sentAt: null
-          },
-          create: {
+        // Remove existing reminders first
+        await prisma.activityReminder.deleteMany({
+          where: { activityId: params.id }
+        })
+        
+        // Create new reminder
+        await prisma.activityReminder.create({
+          data: {
             activityId: params.id,
             farmId: existingActivity.farmId,
             reminderDate: new Date(validatedData.reminderDate),
@@ -252,7 +251,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
     if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -260,7 +259,7 @@ export async function DELETE(
       )
     }
 
-    const profile = await getOrCreateProfile(userId)
+    const profile = await getOrCreateProfile()
     if (!profile) {
       return NextResponse.json(
         { success: false, error: 'Profile not found' },

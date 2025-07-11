@@ -16,7 +16,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
     if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -24,7 +24,7 @@ export async function PUT(
       )
     }
 
-    const profile = await getOrCreateProfile(userId)
+    const profile = await getOrCreateProfile()
     if (!profile) {
       return NextResponse.json(
         { success: false, error: 'Profile not found' },
