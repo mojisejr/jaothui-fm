@@ -6,12 +6,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Calendar, Clock, FileText, AlertCircle, X } from 'lucide-react'
 import { toast } from 'sonner'
+import { ActivityStatus } from '@prisma/client'
 import { 
   saveActivityType, 
   getActivityTypeSuggestions, 
   getPopularActivityTypes,
   formatActivityDate 
 } from '@/lib/activity-utils'
+import { ActivityStatusSelector } from '@/components/ui/activity-status-selector'
 
 // Form validation schema
 const activityFormSchema = z.object({
@@ -33,6 +35,8 @@ const activityFormSchema = z.object({
     },
     z.string().optional()
   ),
+  status: z.enum(['PENDING', 'COMPLETED', 'CANCELLED', 'OVERDUE'])
+    .default('PENDING'),
   animalId: z.string()
     .min(1, 'กรุณาระบุสัตว์'),
   farmId: z.string()
@@ -88,12 +92,14 @@ export default function ActivityForm({
       activityDate: formatActivityDate(new Date().toISOString()),
       title: '',
       description: '',
-      reminderDate: ''
+      reminderDate: '',
+      status: 'PENDING' as ActivityStatus
     }
   })
 
   const titleValue = watch('title')
   const reminderDateValue = watch('reminderDate')
+  const statusValue = watch('status')
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -242,6 +248,19 @@ export default function ActivityForm({
             </div>
           )}
         </div>
+
+        {/* Activity Status */}
+        <ActivityStatusSelector
+          value={statusValue}
+          onChange={(status) => setValue('status', status)}
+          disabled={isSubmitting}
+        />
+        {errors.status && (
+          <div className="flex items-center space-x-1 text-red-500 text-sm">
+            <AlertCircle className="w-4 h-4" />
+            <span>{errors.status.message}</span>
+          </div>
+        )}
 
         {/* Reminder Date */}
         <div className="space-y-2">

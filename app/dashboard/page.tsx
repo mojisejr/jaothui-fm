@@ -59,6 +59,17 @@ export default async function DashboardPage() {
               </span>
             </div>
           </Link>
+
+          <Link href="/dashboard/activities" className="block">
+            <div className="bg-[#f9f9f9] rounded-[10px] p-4 flex justify-between items-center hover:bg-[#f0f0f0] transition-colors">
+              <span className="text-[#333333] text-[14px]">
+                จัดการกิจกรรมทั้งหมด
+              </span>
+              <button className="bg-[#f39c12] text-white text-[12px] px-4 py-2 rounded-[15px]">
+                ดูทั้งหมด
+              </button>
+            </div>
+          </Link>
           
           <div className="bg-[#f9f9f9] rounded-[10px] p-4 flex justify-between items-center">
             <span className="text-[#333333] text-[14px]">

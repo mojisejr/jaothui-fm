@@ -80,7 +80,8 @@ export async function POST(request: NextRequest) {
         ...validatedData,
         createdBy: profile.id,
         activityDate: new Date(validatedData.activityDate),
-        reminderDate: validatedData.reminderDate ? new Date(validatedData.reminderDate) : null
+        reminderDate: validatedData.reminderDate ? new Date(validatedData.reminderDate) : null,
+        status: validatedData.status || 'PENDING' // Use provided status or default to PENDING
       },
       include: {
         animal: {

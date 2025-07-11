@@ -160,7 +160,8 @@ export const createActivitySchema = z.object({
     .trim()
     .optional(),
   activityDate: dateStringSchema,
-  reminderDate: optionalDateStringSchema
+  reminderDate: optionalDateStringSchema,
+  status: activityStatusSchema.optional() // Status field for creation
 }).refine(
   (data) => {
     if (data.reminderDate && data.activityDate) {
