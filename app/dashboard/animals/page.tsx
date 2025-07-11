@@ -7,14 +7,19 @@ import { AnimalType } from '@prisma/client'
 import { format } from 'date-fns'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import ActivityStatusManager from '@/components/ui/activity-status-manager'
+import { ActivityWithRelations } from '@/app/api/activities/route'
+import { isReminderOverdue, formatActivityDateDisplay } from '@/lib/activity-utils'
 
 export default function AnimalsPage() {
   const { user } = useUser()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<'animals' | 'reminders'>('animals')
   const [animals, setAnimals] = useState<AnimalWithFarm[]>([])
+  const [reminders, setReminders] = useState<ActivityWithRelations[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null)
 
   const fetchAnimals = async () => {
     try {
@@ -34,9 +39,75 @@ export default function AnimalsPage() {
     }
   }
 
+  const fetchReminders = async () => {
+    try {
+      const response = await fetch('/api/activities?hasReminder=true&sortBy=reminderDate&sortOrder=asc')
+      const data: ApiResponse<PaginatedResponse<ActivityWithRelations>> = await response.json()
+      
+      if (data.success && data.data) {
+        // Sort reminders: overdue first, then by date
+        const sortedReminders = data.data.data.sort((a, b) => {
+          const aOverdue = a.reminderDate && isReminderOverdue(a.reminderDate)
+          const bOverdue = b.reminderDate && isReminderOverdue(b.reminderDate)
+          
+          if (aOverdue && !bOverdue) return -1
+          if (!aOverdue && bOverdue) return 1
+          
+          if (a.reminderDate && b.reminderDate) {
+            return new Date(a.reminderDate).getTime() - new Date(b.reminderDate).getTime()
+          }
+          
+          return 0
+        })
+        
+        setReminders(sortedReminders)
+      } else {
+        console.error('Failed to fetch reminders:', data.error)
+      }
+    } catch (err) {
+      console.error('Failed to fetch reminders:', err)
+    }
+  }
+
   useEffect(() => {
     fetchAnimals()
   }, [])
+
+  useEffect(() => {
+    if (activeTab === 'reminders') {
+      fetchReminders()
+    }
+  }, [activeTab])
+
+  const handleStatusUpdate = async (activityId: string, newStatus: string, reminderDate?: string) => {
+    try {
+      setUpdatingStatus(activityId)
+      
+      const response = await fetch(`/api/activities/${activityId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: newStatus,
+          reminderDate
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Refresh reminders list
+        await fetchReminders()
+      } else {
+        throw new Error(result.error || 'Failed to update status')
+      }
+    } catch (error) {
+      console.error('Error updating status:', error)
+    } finally {
+      setUpdatingStatus(null)
+    }
+  }
 
   const getAnimalTypeDisplay = (type: AnimalType) => {
     const typeMap = {
@@ -173,48 +244,56 @@ export default function AnimalsPage() {
 
         {activeTab === 'reminders' && (
           <div className="space-y-4">
-            {loading ? (
-              <div className="flex justify-center items-center py-8">
-                <div className="text-gray-500">กำลังโหลด...</div>
-              </div>
-            ) : pendingReminders.length === 0 ? (
+            {reminders.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 ไม่มีรายการแจ้งเตือน
               </div>
             ) : (
-              pendingReminders.map((animal) => (
-                <div key={animal.id} className="space-y-2">
-                  {animal.activities
-                    .filter(activity => activity.reminderDate && activity.status === 'PENDING')
-                    .map((activity) => (
-                      <div
-                        key={activity.id}
-                        className="bg-[#f9f9f9] rounded-[15px] p-4 border-l-4 border-[#f39c12]"
-                      >
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <div className="font-medium text-gray-900">
-                              {activity.title}
-                            </div>
-                            <div className="text-sm text-gray-600 mt-1">
-                              สัตว์: {animal.name} ({animal.animalId})
-                            </div>
-                            <div className="text-sm text-gray-600 mt-1">
-                              วันที่แจ้งเตือน: {formatDate(activity.reminderDate)}
-                            </div>
-                            {activity.description && (
-                              <div className="text-sm text-gray-600 mt-1">
-                                {activity.description}
-                              </div>
-                            )}
-                          </div>
-                          <div className="text-xs text-[#f39c12] font-medium">
-                            รอดำเนินการ
-                          </div>
+              reminders.map((reminder) => (
+                <div
+                  key={reminder.id}
+                  className={`bg-[#f9f9f9] rounded-[15px] p-4 border-l-4 ${
+                    reminder.reminderDate && isReminderOverdue(reminder.reminderDate)
+                      ? 'border-[#e74c3c]'
+                      : 'border-[#f39c12]'
+                  }`}
+                >
+                  <div className="space-y-3">
+                    {/* Reminder Header */}
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900">
+                          {reminder.title}
                         </div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          สัตว์: {reminder.animal.name} ({reminder.animal.animalId})
+                        </div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          วันที่แจ้งเตือน: {reminder.reminderDate ? formatActivityDateDisplay(reminder.reminderDate) : 'ไม่ระบุ'}
+                        </div>
+                        {reminder.description && (
+                          <div className="text-sm text-gray-600 mt-1">
+                            {reminder.description}
+                          </div>
+                        )}
                       </div>
-                    ))
-                  }
+                      {reminder.reminderDate && isReminderOverdue(reminder.reminderDate) && (
+                        <div className="text-xs text-[#e74c3c] font-medium bg-[#e74c3c] bg-opacity-10 px-2 py-1 rounded-full">
+                          เกินกำหนด
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Status Management */}
+                    <ActivityStatusManager
+                      activityId={reminder.id}
+                      currentStatus={reminder.status}
+                      activityDate={reminder.activityDate.toString()}
+                      reminderDate={reminder.reminderDate?.toString()}
+                      onStatusUpdate={handleStatusUpdate}
+                      isUpdating={updatingStatus === reminder.id}
+                    />
+                  </div>
                 </div>
               ))
             )}

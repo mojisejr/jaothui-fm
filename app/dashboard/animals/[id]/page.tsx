@@ -5,8 +5,9 @@ import { useParams, useRouter } from 'next/navigation'
 import { AnimalWithFarm, ApiResponse } from '@/lib/types'
 import { AnimalType, Sex } from '@prisma/client'
 import { format } from 'date-fns'
-import { Search, Calendar, Hash, Heart, Users, Palette, Trophy, Ruler, ChevronLeft } from 'lucide-react'
+import { Search, Calendar, Hash, Heart, Users, Palette, Trophy, Ruler, ChevronLeft, Plus, Activity } from 'lucide-react'
 import Link from 'next/link'
+import ActivityForm, { ActivityFormData } from '@/components/forms/activity-form'
 
 export default function AnimalDetailPage() {
   const params = useParams()
@@ -15,6 +16,8 @@ export default function AnimalDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'PED' | 'ART'>('PED')
+  const [showActivityForm, setShowActivityForm] = useState(false)
+  const [isSubmittingActivity, setIsSubmittingActivity] = useState(false)
 
   const fetchAnimal = useCallback(async () => {
     try {
@@ -83,6 +86,37 @@ export default function AnimalDetailPage() {
       'trophy': <Trophy className="w-5 h-5 text-[#f39c12]" />
     }
     return iconMap[type] || <Hash className="w-5 h-5 text-[#f39c12]" />
+  }
+
+  const handleActivitySubmit = async (data: ActivityFormData) => {
+    if (!animal) return
+    
+    try {
+      setIsSubmittingActivity(true)
+      
+      const response = await fetch('/api/activities', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setShowActivityForm(false)
+        // Could add success notification here
+        console.log('Activity created successfully')
+      } else {
+        throw new Error(result.error || 'Failed to create activity')
+      }
+    } catch (error) {
+      console.error('Error creating activity:', error)
+      // Could add error notification here
+    } finally {
+      setIsSubmittingActivity(false)
+    }
   }
 
   if (loading) {
@@ -273,8 +307,18 @@ export default function AnimalDetailPage() {
           </div>
         </div>
 
-        {/* Update Button */}
-        <div className="px-2">
+        {/* Action Buttons */}
+        <div className="space-y-3 px-2">
+          {/* Add Activity Button */}
+          <button 
+            onClick={() => setShowActivityForm(true)}
+            className="w-full bg-[#2ecc71] text-white py-4 rounded-[25px] font-bold text-base hover:bg-[#27ae60] transition-colors flex items-center justify-center space-x-2"
+          >
+            <Plus className="w-5 h-5" />
+            <span>เพิ่มกิจกรรม</span>
+          </button>
+
+          {/* Update Button */}
           <button 
             onClick={() => router.push(`/dashboard/animals/${animal.id}/edit`)}
             className="w-full bg-[#f39c12] text-white py-4 rounded-[25px] font-bold text-base hover:bg-[#e67e22] transition-colors"
@@ -299,6 +343,21 @@ export default function AnimalDetailPage() {
           </button>
         </div>
       </div>
+
+      {/* Activity Form Modal */}
+      {showActivityForm && animal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="w-full max-w-md">
+            <ActivityForm
+              animalId={animal.id}
+              farmId={animal.farmId}
+              onSubmit={handleActivitySubmit}
+              onCancel={() => setShowActivityForm(false)}
+              isSubmitting={isSubmittingActivity}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
