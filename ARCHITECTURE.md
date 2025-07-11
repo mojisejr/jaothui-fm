@@ -155,9 +155,9 @@ const {
   handleSubmit,
   formState: { errors, isSubmitting },
   setValue,
-  watch
+  watch,
 } = useForm<FormData>({
-  resolver: zodResolver(validationSchema)
+  resolver: zodResolver(validationSchema),
 });
 ```
 
@@ -169,7 +169,7 @@ export function useApiData<T>(url: string) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  
+
   // Fetch logic with error handling
   return { data, loading, error, refetch };
 }
@@ -181,20 +181,20 @@ export function useApiData<T>(url: string) {
 // Activity type history management
 export function useActivityTypes() {
   const [types, setTypes] = useState<string[]>([]);
-  
+
   useEffect(() => {
-    const savedTypes = localStorage.getItem('activityTypes');
+    const savedTypes = localStorage.getItem("activityTypes");
     if (savedTypes) {
       setTypes(JSON.parse(savedTypes));
     }
   }, []);
-  
+
   const addType = (type: string) => {
     const updatedTypes = [...new Set([type, ...types])];
     setTypes(updatedTypes);
-    localStorage.setItem('activityTypes', JSON.stringify(updatedTypes));
+    localStorage.setItem("activityTypes", JSON.stringify(updatedTypes));
   };
-  
+
   return { types, addType };
 }
 ```
@@ -206,30 +206,30 @@ export function useActivityTypes() {
 ```tsx
 // Primary colors from UI-GUIDELINES.md
 const theme = {
-  primary: '#f39c12',        // Orange brand color
-  primaryLight: '#f5b041',   // Lighter orange for hover
-  primaryDark: '#d68910',    // Darker orange for active
-  
+  primary: "#f39c12", // Orange brand color
+  primaryLight: "#f5b041", // Lighter orange for hover
+  primaryDark: "#d68910", // Darker orange for active
+
   neutral: {
-    headerBg: '#4a4a4a',     // Dark gray header
-    textPrimary: '#333333',   // Main text color
-    textSecondary: '#666666', // Secondary text
-    textMuted: '#999999',     // Muted text
+    headerBg: "#4a4a4a", // Dark gray header
+    textPrimary: "#333333", // Main text color
+    textSecondary: "#666666", // Secondary text
+    textMuted: "#999999", // Muted text
   },
-  
+
   background: {
-    white: '#ffffff',         // Pure white
-    light: '#f9f9f9',        // Light gray cards
-    input: '#f5f5f5',        // Input backgrounds
-    border: '#e0e0e0',       // Border color
+    white: "#ffffff", // Pure white
+    light: "#f9f9f9", // Light gray cards
+    input: "#f5f5f5", // Input backgrounds
+    border: "#e0e0e0", // Border color
   },
-  
+
   status: {
-    success: '#2ecc71',       // Green for success
-    warning: '#f1c40f',       // Yellow for warning
-    error: '#e74c3c',         // Red for error
-    info: '#3498db',          // Blue for info
-  }
+    success: "#2ecc71", // Green for success
+    warning: "#f1c40f", // Yellow for warning
+    error: "#e74c3c", // Red for error
+    info: "#3498db", // Blue for info
+  },
 };
 ```
 
@@ -239,27 +239,27 @@ const theme = {
 // Font sizes and weights from UI-GUIDELINES.md
 const typography = {
   fontSize: {
-    xs: '12px',    // Small labels
-    sm: '14px',    // Secondary text
-    base: '16px',  // Body text
-    lg: '18px',    // Large text
-    xl: '20px',    // Subheadings
-    '2xl': '24px', // Headings
-    '3xl': '32px', // Brand text
+    xs: "12px", // Small labels
+    sm: "14px", // Secondary text
+    base: "16px", // Body text
+    lg: "18px", // Large text
+    xl: "20px", // Subheadings
+    "2xl": "24px", // Headings
+    "3xl": "32px", // Brand text
   },
-  
+
   fontWeight: {
     normal: 400,
     medium: 500,
     semibold: 600,
     bold: 700,
   },
-  
+
   lineHeight: {
     tight: 1.25,
     normal: 1.5,
     relaxed: 1.75,
-  }
+  },
 };
 ```
 
@@ -268,17 +268,17 @@ const typography = {
 ```tsx
 // Spacing scale from UI-GUIDELINES.md
 const spacing = {
-  1: '4px',    // 0.25rem
-  2: '8px',    // 0.5rem
-  3: '12px',   // 0.75rem
-  4: '16px',   // 1rem
-  5: '20px',   // 1.25rem
-  6: '24px',   // 1.5rem
-  8: '32px',   // 2rem
-  10: '40px',  // 2.5rem
-  12: '48px',  // 3rem
-  16: '64px',  // 4rem
-  20: '80px',  // 5rem
+  1: "4px", // 0.25rem
+  2: "8px", // 0.5rem
+  3: "12px", // 0.75rem
+  4: "16px", // 1rem
+  5: "20px", // 1.25rem
+  6: "24px", // 1.5rem
+  8: "32px", // 2rem
+  10: "40px", // 2.5rem
+  12: "48px", // 3rem
+  16: "64px", // 4rem
+  20: "80px", // 5rem
 };
 ```
 
@@ -290,16 +290,16 @@ const spacing = {
 // Base mobile styles (400px max-width)
 const mobileFirst = {
   container: {
-    maxWidth: '400px',
-    margin: '0 auto',
-    padding: '0 20px',
+    maxWidth: "400px",
+    margin: "0 auto",
+    padding: "0 20px",
   },
-  
+
   // Desktop enhancements
   desktop: {
-    maxWidth: '768px',
-    padding: '0 40px',
-  }
+    maxWidth: "768px",
+    padding: "0 40px",
+  },
 };
 ```
 
@@ -308,9 +308,9 @@ const mobileFirst = {
 ```tsx
 // Minimum touch targets for mobile
 const touchTargets = {
-  minHeight: '44px',    // Minimum button height
-  minWidth: '44px',     // Minimum interactive area
-  spacing: '8px',       // Minimum spacing between targets
+  minHeight: "44px", // Minimum button height
+  minWidth: "44px", // Minimum interactive area
+  spacing: "8px", // Minimum spacing between targets
 };
 ```
 
@@ -319,9 +319,9 @@ const touchTargets = {
 ```tsx
 // Responsive breakpoints
 const breakpoints = {
-  mobile: '400px',      // Primary mobile target
-  tablet: '768px',      // Tablet landscape
-  desktop: '1024px',    // Desktop
+  mobile: "400px", // Primary mobile target
+  tablet: "768px", // Tablet landscape
+  desktop: "1024px", // Desktop
 };
 ```
 
@@ -354,18 +354,15 @@ const breakpoints = {
 
 ```tsx
 // Standard API route authentication
-import { auth } from '@clerk/nextjs';
+import { auth } from "@clerk/nextjs";
 
 export async function GET() {
   const { userId } = auth();
-  
+
   if (!userId) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  
+
   // Route logic
 }
 ```
@@ -378,11 +375,8 @@ try {
   // API logic
   return NextResponse.json({ data: result });
 } catch (error) {
-  console.error('API Error:', error);
-  return NextResponse.json(
-    { error: 'Internal Server Error' },
-    { status: 500 }
-  );
+  console.error("API Error:", error);
+  return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
 }
 ```
 
@@ -390,18 +384,18 @@ try {
 
 ```tsx
 // Request validation with Zod
-import { validationSchema } from '@/lib/validations';
+import { validationSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const validatedData = validationSchema.parse(body);
-    
+
     // Process validated data
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.errors },
+        { error: "Validation failed", details: error.errors },
         { status: 400 }
       );
     }
@@ -471,16 +465,16 @@ model Activity {
 // Animal ID generation business logic
 export function generateAnimalId(animalType: AnimalType, date: Date): string {
   const typeCodes = {
-    BUFFALO: 'BF',
-    CHICKEN: 'CK',
-    COW: 'CW',
-    PIG: 'PG',
-    HORSE: 'HR'
+    BUFFALO: "BF",
+    CHICKEN: "CK",
+    COW: "CW",
+    PIG: "PG",
+    HORSE: "HR",
   };
-  
-  const dateStr = format(date, 'yyyyMMdd');
-  const sequence = '001'; // Generated based on existing animals
-  
+
+  const dateStr = format(date, "yyyyMMdd");
+  const sequence = "001"; // Generated based on existing animals
+
   return `${typeCodes[animalType]}${dateStr}${sequence}`;
 }
 ```
@@ -507,12 +501,9 @@ graph TD
 
 ```tsx
 // Middleware protection pattern
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/profile(.*)'
-]);
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/profile(.*)"]);
 
 export default clerkMiddleware((auth, req) => {
   if (isProtectedRoute(req)) auth().protect();
@@ -526,13 +517,13 @@ export default clerkMiddleware((auth, req) => {
 export async function getUserFarm(userId: string) {
   const profile = await prisma.profile.findUnique({
     where: { clerkUserId: userId },
-    include: { ownedFarms: true }
+    include: { ownedFarms: true },
   });
-  
+
   if (!profile || profile.ownedFarms.length === 0) {
-    throw new Error('Farm not found');
+    throw new Error("Farm not found");
   }
-  
+
   return profile.ownedFarms[0];
 }
 ```
@@ -542,6 +533,7 @@ export async function getUserFarm(userId: string) {
 ### Optimization Strategies
 
 1. **Component Optimization**
+
    ```tsx
    // Memoization for expensive components
    const AnimalCard = React.memo(({ animal }: AnimalCardProps) => {
@@ -550,6 +542,7 @@ export async function getUserFarm(userId: string) {
    ```
 
 2. **Data Fetching Optimization**
+
    ```tsx
    // Efficient data fetching with proper error handling
    export async function getAnimalsWithActivities(farmId: string) {
@@ -557,10 +550,10 @@ export async function getUserFarm(userId: string) {
        where: { farmId },
        include: {
          activities: {
-           orderBy: { activityDate: 'desc' },
-           take: 5 // Limit initial load
-         }
-       }
+           orderBy: { activityDate: "desc" },
+           take: 5, // Limit initial load
+         },
+       },
      });
    }
    ```
@@ -572,7 +565,7 @@ export async function getUserFarm(userId: string) {
      if (imageUrl) {
        return <img src={imageUrl} alt={name} className="animal-image" />;
      }
-     
+
      return (
        <div className="animal-placeholder">
          <span className="animal-icon">{getAnimalTypeIcon(animalType)}</span>
@@ -586,8 +579,8 @@ export async function getUserFarm(userId: string) {
 
 ```tsx
 // Dynamic imports for code splitting
-const ActivityForm = dynamic(() => import('@/components/forms/activity-form'), {
-  loading: () => <div>Loading...</div>
+const ActivityForm = dynamic(() => import("@/components/forms/activity-form"), {
+  loading: () => <div>Loading...</div>,
 });
 ```
 
@@ -597,28 +590,28 @@ const ActivityForm = dynamic(() => import('@/components/forms/activity-form'), {
 
 ```tsx
 // Standard component test pattern
-import { render, screen, fireEvent } from '@testing-library/react';
-import { AnimalCard } from './animal-card';
+import { render, screen, fireEvent } from "@testing-library/react";
+import { AnimalCard } from "./animal-card";
 
-describe('AnimalCard', () => {
+describe("AnimalCard", () => {
   const mockAnimal = {
-    id: '1',
-    name: 'Test Buffalo',
-    animalType: 'BUFFALO',
-    animalId: 'BF20250101001'
+    id: "1",
+    name: "Test Buffalo",
+    animalType: "BUFFALO",
+    animalId: "BF20250101001",
   };
-  
-  it('renders animal information correctly', () => {
+
+  it("renders animal information correctly", () => {
     render(<AnimalCard animal={mockAnimal} />);
-    expect(screen.getByText('Test Buffalo')).toBeInTheDocument();
-    expect(screen.getByText('BF20250101001')).toBeInTheDocument();
+    expect(screen.getByText("Test Buffalo")).toBeInTheDocument();
+    expect(screen.getByText("BF20250101001")).toBeInTheDocument();
   });
-  
-  it('handles click events', () => {
+
+  it("handles click events", () => {
     const onClickMock = jest.fn();
     render(<AnimalCard animal={mockAnimal} onClick={onClickMock} />);
-    fireEvent.click(screen.getByRole('button'));
-    expect(onClickMock).toHaveBeenCalledWith('1');
+    fireEvent.click(screen.getByRole("button"));
+    expect(onClickMock).toHaveBeenCalledWith("1");
   });
 });
 ```
@@ -627,20 +620,20 @@ describe('AnimalCard', () => {
 
 ```tsx
 // API route testing pattern
-import { createMocks } from 'node-mocks-http';
-import handler from '@/app/api/animals/route';
+import { createMocks } from "node-mocks-http";
+import handler from "@/app/api/animals/route";
 
-describe('/api/animals', () => {
-  it('handles GET request successfully', async () => {
+describe("/api/animals", () => {
+  it("handles GET request successfully", async () => {
     const { req, res } = createMocks({
-      method: 'GET',
-      headers: { authorization: 'Bearer valid-token' }
+      method: "GET",
+      headers: { authorization: "Bearer valid-token" },
     });
-    
+
     await handler(req, res);
-    
+
     expect(res._getStatusCode()).toBe(200);
-    expect(JSON.parse(res._getData())).toHaveProperty('data');
+    expect(JSON.parse(res._getData())).toHaveProperty("data");
   });
 });
 ```
@@ -650,21 +643,25 @@ describe('/api/animals', () => {
 ### Feature Development Process
 
 1. **Planning Phase**
+
    - Define component requirements
    - Review UI-GUIDELINES.md patterns
    - Plan API endpoints if needed
 
 2. **Implementation Phase**
+
    - Create components following established patterns
    - Implement API routes with proper validation
    - Add TypeScript types
 
 3. **Testing Phase**
+
    - Write component tests
    - Test API endpoints
    - Manual mobile testing (400px width)
 
 4. **Integration Phase**
+
    - Integrate with existing pages
    - Test user flows end-to-end
    - Verify mobile responsiveness
@@ -678,13 +675,13 @@ describe('/api/animals', () => {
 
 ```tsx
 // Standard imports organization
-import React from 'react';                    // React imports
-import { useState, useEffect } from 'react';  // React hooks
-import { NextResponse } from 'next/server';   // Next.js imports
-import { z } from 'zod';                      // Third-party imports
-import { AnimalType } from '@prisma/client';  // Generated types
-import { validateAnimalId } from '@/lib/animal-id';  // Local utilities
-import type { ApiResponse } from '@/lib/types';      // Local types
+import React from "react"; // React imports
+import { useState, useEffect } from "react"; // React hooks
+import { NextResponse } from "next/server"; // Next.js imports
+import { z } from "zod"; // Third-party imports
+import { AnimalType } from "@prisma/client"; // Generated types
+import { validateAnimalId } from "@/lib/animal-id"; // Local utilities
+import type { ApiResponse } from "@/lib/types"; // Local types
 ```
 
 ```tsx
@@ -695,15 +692,15 @@ import type { ApiResponse } from '@/lib/types';      // Local types
 // - kebab-case for file names
 
 const ANIMAL_TYPE_ICONS = {
-  BUFFALO: '🐃',
-  CHICKEN: '🐔'
+  BUFFALO: "🐃",
+  CHICKEN: "🐔",
 } as const;
 
 export function AnimalCard({ animal }: AnimalCardProps) {
   const handleClick = () => {
     // Implementation
   };
-  
+
   return <div>{/* Component content */}</div>;
 }
 ```
@@ -713,18 +710,20 @@ export function AnimalCard({ animal }: AnimalCardProps) {
 ### Scalability Improvements
 
 1. **State Management Evolution**
+
    ```tsx
    // Potential future: Context API for global state
    const FarmContext = createContext<FarmContextType>();
-   
+
    // Or React Query for server state
-   const { data: animals } = useQuery(['animals', farmId], fetchAnimals);
+   const { data: animals } = useQuery(["animals", farmId], fetchAnimals);
    ```
 
 2. **Component Library Extraction**
+
    ```tsx
    // Potential future: Separate UI component library
-   import { Card, Button, Input } from '@jaothui/ui-components';
+   import { Card, Button, Input } from "@jaothui/ui-components";
    ```
 
 3. **Database Optimization**
@@ -741,7 +740,7 @@ export function AnimalCard({ animal }: AnimalCardProps) {
 
 ```tsx
 // Future: Performance monitoring integration
-import { reportWebVitals } from 'web-vitals';
+import { reportWebVitals } from "web-vitals";
 
 reportWebVitals((metric) => {
   // Send to analytics service
@@ -751,5 +750,5 @@ reportWebVitals((metric) => {
 
 ---
 
-**Last Updated**: 2025-07-11 (Round 7.1 Documentation Enhancement)
-**Next Review**: After Round 7.2 Activity History Enhancement completion
+**Last Updated**: 2025-07-11 (Round 7.3 Documentation Enhancement)
+**Next Review**: After Round 7.3 Activity Management Enhancement completion

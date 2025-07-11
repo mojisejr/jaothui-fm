@@ -939,6 +939,20 @@ module.exports = {
 "อ่าน TESTING-GUIDELINES.md sections: Component Testing Patterns, Performance Testing สำหรับ test history display และ pagination"
 ```
 
+### Round 7.3: Activity Management Enhancement
+**Primary Focus**: Comprehensive activity management testing
+```tsx
+// ใช้สำหรับ:
+// - Activity list page testing with tab navigation
+// - Activity detail/edit page testing
+// - Activity status management testing
+// - Enhanced activity creation form testing
+// - End-to-end activity workflow testing
+
+// Prompt คำแนะนำ:
+"อ่าน TESTING-GUIDELINES.md sections: End-to-End Testing Patterns, Form Component Testing สำหรับ test comprehensive activity management system"
+```
+
 ### Round 8: Notification System
 **Primary Focus**: Real-time feature testing และ service worker
 ```tsx
@@ -1131,6 +1145,6 @@ export const server = setupServer(...handlers);
 
 ---
 
-**Last Updated**: 2025-07-11 (Round 7.1 Documentation Enhancement)
-**Next Review**: After Round 7.2 Activity History Enhancement testing
+**Last Updated**: 2025-07-11 (Round 7.3 Documentation Enhancement)
+**Next Review**: After Round 7.3 Activity Management Enhancement testing
 **Usage**: สำหรับทุก Round ในการ ensure quality และ maintain testing standards throughout development

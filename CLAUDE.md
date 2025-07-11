@@ -99,7 +99,7 @@ model Activity {
 ### Round Structure & Dependencies:
 
 ```
-R1: Foundation → R2: Auth+DB → R3: Pages → R3.5: Profile Flow → R4: API → R5: Animal UI → R6: CRUD → R7: Activities → R7.1: Bug Fix → R7.2: History → R8: Notifications
+R1: Foundation → R2: Auth+DB → R3: Pages → R3.5: Profile Flow → R4: API → R5: Animal UI → R6: CRUD → R7: Activities → R7.1: Bug Fix → R7.2: History → R7.3: Activity Management → R8: Notifications
 ```
 
 ### Enhanced Round Prompts:
@@ -381,6 +381,36 @@ TESTING PROTOCOL:
 6. Verify mobile layout at 400px width
 
 COMMIT: "feat: implement activity history display following buffalo_card pattern"
+```
+
+#### Round 7.3: Activity Management Enhancement
+
+```
+อ่าน CLAUDE.md และทำ Round 7.3: Activity Management Enhancement ตาม paired sub-agent pattern
+
+TASK BREAKDOWN:
+- Task A: Activity list page with tab navigation following animal-list-tab-page.json pattern (dependencies: Round 7.2 completed)
+- Task B: Activity detail/edit page with status management following animal-detail-page.json pattern (dependencies: Task A components)
+- Task C: Enhance activity-form.tsx to include activity status selection field (dependencies: Task B components)
+
+ACCEPTANCE CRITERIA CHECKLIST:
+□ Activity list page displays with tab navigation between "กิจกรรมทั้งหมด" and "รายการแจ้งเตือน"
+□ Activity cards display following buffalo_card pattern exactly with status indicators
+□ Activity detail page shows comprehensive activity information with status update functionality
+□ Activity status selection field added to creation form (PENDING, COMPLETED, CANCELLED)
+□ Status update functionality works (complete, postpone, cancel) with proper API integration
+□ Navigation to/from activity list and detail views functions properly
+□ Mobile responsive design verified (400px max-width)
+
+TESTING PROTOCOL:
+1. Create test activities → verify they appear in activity list with correct tab navigation
+2. Test activity list filtering by status and type
+3. Click activity card → detail page loads with status management options
+4. Test activity creation with initial status selection → saves correctly
+5. Test status updates (postpone, complete, cancel) → updates persist in database
+6. Verify mobile layout and touch interactions at 400px width
+
+COMMIT: "feat: implement comprehensive activity management system with list, detail, and enhanced creation"
 ```
 
 #### Round 8: Notification System

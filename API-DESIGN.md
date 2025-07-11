@@ -839,6 +839,19 @@ export async function GET() {
 "อ่าน API-DESIGN.md sections: Query Parameters & Filtering, Pagination Pattern สำหรับ implement activity history with load more"
 ```
 
+### Round 7.3: Activity Management Enhancement
+**Primary Focus**: Activity CRUD management และ status update APIs
+```typescript
+// ใช้สำหรับ:
+// - Activity list page with comprehensive filtering
+// - Activity detail/edit functionality
+// - Activity status update operations (PATCH /api/activities/[id]/status)
+// - Enhanced activity creation with initial status selection
+
+// Prompt คำแนะนำ:
+"อ่าน API-DESIGN.md sections: CRUD Operation Patterns, Status Update Pattern สำหรับ implement comprehensive activity management with status controls"
+```
+
 ### Round 8: Notification System
 **Primary Focus**: Notification APIs และ webhook integration
 ```typescript
@@ -868,6 +881,6 @@ export async function GET() {
 
 ---
 
-**Last Updated**: 2025-07-11 (Round 7.1 Documentation Enhancement)
-**Next Review**: After Round 7.2 Activity History Enhancement implementation
-**Usage**: สำหรับ Round 4, 6, 7, 7.2, และ 8 ในการ implement และ maintain API standards
+**Last Updated**: 2025-07-11 (Round 7.3 Documentation Enhancement)
+**Next Review**: After Round 7.3 Activity Management Enhancement implementation  
+**Usage**: สำหรับ Round 4, 6, 7, 7.2, 7.3, และ 8 ในการ implement และ maintain API standards
