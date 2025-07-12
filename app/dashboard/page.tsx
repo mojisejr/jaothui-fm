@@ -2,12 +2,13 @@ import { getOrCreateProfile } from '@/lib/user';
 import { redirect } from 'next/navigation';
 import { SignOutButton } from '@clerk/nextjs';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function DashboardPage() {
   const profile = await getOrCreateProfile();
   
   if (!profile) {
-    redirect('/sign-in');
+    redirect('/profile/complete');
   }
 
   const farm = profile.ownedFarms[0]; // Get the first farm
@@ -48,14 +49,27 @@ export default async function DashboardPage() {
       {/* Menu Section */}
       <div className="bg-white mx-5 mb-5 p-5 rounded-[15px]">
         <div className="space-y-3">
-          <div className="bg-[#f9f9f9] rounded-[10px] p-4 flex justify-between items-center">
-            <span className="text-[#333333] text-[14px]">
-              ข้อมูลกระบือภายในฟาร์ม
-            </span>
-            <span className="bg-[#f39c12] text-white text-[12px] px-2 py-1 rounded-full">
-              {animalCount}
-            </span>
-          </div>
+          <Link href="/dashboard/animals" className="block">
+            <div className="bg-[#f9f9f9] rounded-[10px] p-4 flex justify-between items-center hover:bg-[#f0f0f0] transition-colors">
+              <span className="text-[#333333] text-[14px]">
+                ข้อมูลสัตว์ภายในฟาร์ม
+              </span>
+              <span className="bg-[#f39c12] text-white text-[12px] px-2 py-1 rounded-full">
+                {animalCount}
+              </span>
+            </div>
+          </Link>
+
+          <Link href="/dashboard/activities" className="block">
+            <div className="bg-[#f9f9f9] rounded-[10px] p-4 flex justify-between items-center hover:bg-[#f0f0f0] transition-colors">
+              <span className="text-[#333333] text-[14px]">
+                จัดการกิจกรรมทั้งหมด
+              </span>
+              <button className="bg-[#f39c12] text-white text-[12px] px-4 py-2 rounded-[15px]">
+                ดูทั้งหมด
+              </button>
+            </div>
+          </Link>
           
           <div className="bg-[#f9f9f9] rounded-[10px] p-4 flex justify-between items-center">
             <span className="text-[#333333] text-[14px]">

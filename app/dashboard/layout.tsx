@@ -1,5 +1,5 @@
-import { Bell } from "lucide-react";
-import { SignOutButton, currentUser } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
+import { NotificationBell } from '@/components/ui/notification-bell';
 
 export default async function DashboardLayout({
   children,
@@ -7,7 +7,6 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const user = await currentUser();
-  const notificationCount = 3; // This will be dynamic later
 
   return (
     <div className="min-h-screen bg-[#4a4a4a]">
@@ -18,12 +17,10 @@ export default async function DashboardLayout({
             ระบบ E-ID
           </h1>
           <div className="relative">
-            <Bell className="w-6 h-6 text-white" />
-            {notificationCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#ff4444] text-white text-[12px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                {notificationCount}
-              </span>
-            )}
+            {/* Notification Bell with white icon styling for dark header */}
+            <div className="[&_svg]:text-white [&_button]:hover:bg-gray-600">
+              <NotificationBell />
+            </div>
           </div>
         </header>
 

@@ -24,21 +24,28 @@ export async function getOrCreateProfile() {
     }
   })
 
-  // If no profile exists, create one (fallback for webhook failure)
-  if (!profile) {
-    const primaryPhone = user.phoneNumbers?.find(phone => phone.id === user.primaryPhoneNumberId)
-    const phoneNumber = primaryPhone?.phoneNumber
+  // If profile exists, return it (complete or incomplete)
+  if (profile) {
+    return profile
+  }
 
-    if (!phoneNumber) {
-      throw new Error('Phone number is required')
-    }
+  // If no profile exists, try to create one (fallback for webhook failure)
+  // Only create if we have complete data, otherwise let the profile completion flow handle it
+  const primaryPhone = user.phoneNumbers?.find(phone => phone.id === user.primaryPhoneNumberId)
+  const phoneNumber = primaryPhone?.phoneNumber
 
+  if (!phoneNumber || !user.firstName || !user.lastName) {
+    // Profile is incomplete, return null to trigger profile completion flow
+    return null
+  }
+
+  try {
     profile = await prisma.profile.create({
       data: {
         clerkUserId: user.id,
         phoneNumber,
-        firstName: user.firstName || 'User',
-        lastName: user.lastName || '',
+        firstName: user.firstName,
+        lastName: user.lastName,
         avatarUrl: user.imageUrl || null,
       },
       include: {
@@ -74,7 +81,43 @@ export async function getOrCreateProfile() {
         },
       })
     }
-  }
 
-  return profile
+    return profile
+  } catch (error) {
+    console.error('Failed to create profile:', error)
+    // If profile creation fails, return null to trigger profile completion flow
+    return null
+  }
+}
+
+export async function checkProfileCompleteness(clerkUserId: string) {
+  try {
+    const profile = await prisma.profile.findUnique({
+      where: { clerkUserId },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        phoneNumber: true,
+      },
+    })
+
+    if (!profile) {
+      return { complete: false, profile: null }
+    }
+
+    const isComplete = !!(
+      profile.firstName && 
+      profile.lastName && 
+      profile.phoneNumber
+    )
+
+    return {
+      complete: isComplete,
+      profile: isComplete ? profile : null,
+    }
+  } catch (error) {
+    console.error('Error checking profile completeness:', error)
+    return { complete: false, profile: null }
+  }
 }

@@ -7,14 +7,31 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/api/webhooks/clerk',
   '/api/cron/(.*)',
+  '/service-worker.js',
+])
+
+// Define profile completion and success routes
+const isProfileCompletionRoute = createRouteMatcher([
+  '/profile/complete',
+  '/profile/success',
+  '/api/profile/complete',
 ])
 
 export default clerkMiddleware(async (auth, req) => {
   // Allow public routes without authentication
   if (isPublicRoute(req)) return
 
+  // Allow profile completion and success routes for authenticated users
+  if (isProfileCompletionRoute(req)) {
+    await auth.protect()
+    return
+  }
+
   // Protect all other routes
   await auth.protect()
+
+  // For protected routes, let the route handlers handle profile checks
+  // to avoid middleware complexity and potential auth issues
 })
 
 export const config = {
