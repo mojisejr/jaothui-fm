@@ -10,9 +10,11 @@
 - **Database**: Supabase (PostgreSQL) with Prisma ORM 6.3.0
 - **Authentication**: Clerk 6.24.1
 - **Forms**: React Hook Form 7.54.0 + Zod 3.24.1
-- **Notifications**: Sonner 1.7.1
+- **Notifications**: Sonner 1.7.1 + Web Push Notifications
+- **Push Notifications**: web-push library with VAPID keys ✅
+- **Cron Jobs**: Vercel Cron for daily scheduling ✅
 - **State Management**: React useState + Custom Hooks
-- **Deployment**: Vercel
+- **Deployment**: Vercel + Service Worker support
 
 ## 📁 Project Structure
 
@@ -23,6 +25,9 @@ jaothui-fm/
 │   │   ├── activities/           # Activity CRUD endpoints
 │   │   ├── animals/              # Animal CRUD endpoints
 │   │   ├── farms/                # Farm management endpoints
+│   │   ├── notifications/        # Notification system APIs ✅
+│   │   ├── cron/
+│   │   │   └── reminders/        # Daily cron job for notifications ✅
 │   │   └── webhooks/             # Clerk webhooks
 │   ├── dashboard/                # Protected dashboard pages
 │   │   ├── activities/           # Activity management pages ✅
@@ -36,19 +41,24 @@ jaothui-fm/
 ├── components/                   # Reusable UI components
 │   ├── forms/                    # Form components
 │   └── ui/                       # Basic UI components
+│       └── notification-bell.tsx # Notification bell component ✅
 ├── lib/                          # Utility libraries
 │   ├── activity-utils.ts         # Activity management utilities
 │   ├── animal-id.ts              # Animal ID generation
 │   ├── auth.ts                   # Authentication utilities
 │   ├── form-utils.ts             # Form validation helpers
+│   ├── notification-client-utils.ts # Client-side notification utilities ✅
 │   ├── prisma.ts                 # Database client
 │   ├── types.ts                  # TypeScript type definitions
 │   ├── user.ts                   # User management utilities
-│   └── validations.ts            # Zod validation schemas
+│   ├── validations.ts            # Zod validation schemas
+│   └── web-push-utils.ts         # Server-side push notification utilities ✅
 ├── mock-ui/                      # UI design specifications (JSON)
 ├── prisma/                       # Database schema and migrations
 ├── public/                       # Static assets
-├── middleware.ts                 # Clerk authentication middleware
+│   └── service-worker.js         # Service worker for push notifications ✅
+├── middleware.ts                 # Clerk authentication middleware (updated for SW)
+├── vercel.json                   # Vercel deployment and cron configuration ✅
 └── Documentation files
 ```
 
@@ -753,8 +763,282 @@ reportWebVitals((metric) => {
 
 ---
 
-**Last Updated**: 2025-07-12 (Round 7.4 Completed - Animal-Specific Activity Management)
-**Next Review**: After Round 8 Notification System implementation
+## 🔔 Notification System Architecture (Round 8 ✅)
+
+### Service Worker Integration
+
+```javascript
+// public/service-worker.js - Push notification handling
+self.addEventListener('push', function(event) {
+  if (event.data) {
+    const data = event.data.json();
+    
+    const options = {
+      body: data.body,
+      icon: data.icon || '/jaothui-logo.png',
+      badge: '/badge-icon.png',
+      tag: data.tag || 'farm-reminder',
+      data: data.data,
+      actions: [
+        {
+          action: 'view',
+          title: 'ดูรายละเอียด',
+          icon: '/icons/view.png'
+        },
+        {
+          action: 'complete',
+          title: 'ทำเสร็จแล้ว',
+          icon: '/icons/complete.png'
+        }
+      ],
+      requireInteraction: true
+    };
+    
+    event.waitUntil(
+      self.registration.showNotification(data.title, options)
+    );
+  }
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  
+  if (event.action === 'view') {
+    event.waitUntil(
+      clients.openWindow(event.notification.data.url)
+    );
+  } else if (event.action === 'complete') {
+    // Handle complete action via API
+    fetch(`/api/activities/${event.notification.data.activityId}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'COMPLETED' })
+    });
+  } else {
+    // Default click action
+    event.waitUntil(
+      clients.openWindow(event.notification.data.url || '/')
+    );
+  }
+});
+```
+
+### Web Push Notification Flow
+
+```mermaid
+graph TD
+    A[User grants permission] --> B[Register service worker]
+    B --> C[Subscribe to push notifications]
+    C --> D[Send subscription to server]
+    D --> E[Store subscription in database]
+    E --> F[Daily cron job checks reminders]
+    F --> G[Send push notifications]
+    G --> H[Service worker receives push]
+    H --> I[Display notification with actions]
+    I --> J[User clicks notification]
+    J --> K[Navigate to activity or mark complete]
+```
+
+### VAPID Configuration
+
+```typescript
+// lib/web-push-utils.ts - Server-side push utilities
+import webpush from 'web-push';
+
+webpush.setVapidDetails(
+  `mailto:${process.env.VAPID_EMAIL}`,
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+  process.env.VAPID_PRIVATE_KEY!
+);
+
+export interface NotificationPayload {
+  title: string;
+  body: string;
+  icon?: string;
+  data?: any;
+  tag?: string;
+}
+
+export async function sendPushNotification(
+  subscription: PushSubscriptionData,
+  payload: NotificationPayload
+) {
+  try {
+    await webpush.sendNotification(subscription, JSON.stringify(payload));
+    return { success: true };
+  } catch (error) {
+    console.error('Push notification error:', error);
+    return { success: false, error };
+  }
+}
+```
+
+### Notification Bell Component Architecture
+
+```tsx
+// components/ui/notification-bell.tsx
+export function NotificationBell() {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Real-time notification fetching
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const response = await fetch('/api/notifications');
+      const data = await response.json();
+      setNotifications(data.notifications || []);
+      setUnreadCount(data.unreadCount || 0);
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+    }
+  }, []);
+  
+  // Push notification subscription management
+  const subscribeToPush = async () => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+        });
+        
+        await fetch('/api/notifications', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            action: 'subscribe', 
+            subscription: subscription.toJSON() 
+          })
+        });
+        
+        setIsSubscribed(true);
+        toast.success('เปิดการแจ้งเตือนเรียบร้อยแล้ว');
+      } catch (error) {
+        toast.error('ไม่สามารถเปิดการแจ้งเตือนได้');
+      }
+    }
+  };
+  
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="relative p-2 text-white hover:bg-gray-600 rounded-lg"
+      >
+        <Bell className="w-6 h-6" />
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
+      </button>
+      
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border z-50">
+          {/* Notification dropdown content */}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### Daily Cron Job Architecture
+
+```typescript
+// app/api/cron/reminders/route.ts - Daily 6 AM processing
+export async function GET(request: NextRequest) {
+  // Verify cron secret for security
+  const authHeader = request.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  
+  // Process today's activity reminders
+  const activities = await prisma.activity.findMany({
+    where: {
+      reminderDate: {
+        gte: today,
+        lt: tomorrow
+      },
+      status: 'PENDING'
+    },
+    include: {
+      animal: { select: { name: true, animalType: true } },
+      farm: {
+        include: {
+          owner: {
+            include: {
+              pushSubscriptions: { where: { isActive: true } }
+            }
+          }
+        }
+      }
+    }
+  });
+  
+  // Send notifications and update database
+  for (const activity of activities) {
+    // Create notification record
+    await prisma.notification.create({
+      data: {
+        userId: activity.farm.ownerId,
+        farmId: activity.farmId,
+        activityId: activity.id,
+        notificationType: 'REMINDER',
+        title: 'แจ้งเตือนกิจกรรมฟาร์ม',
+        message: `${activity.animal.name}: ${activity.title}`,
+        pushSent: true,
+        pushSentAt: new Date()
+      }
+    });
+    
+    // Send push notifications to all active subscriptions
+    for (const subscription of activity.farm.owner.pushSubscriptions) {
+      await sendPushNotification(
+        {
+          endpoint: subscription.endpoint,
+          keys: {
+            p256dh: subscription.p256dhKey,
+            auth: subscription.authKey
+          }
+        },
+        {
+          title: 'แจ้งเตือนกิจกรรมฟาร์ม',
+          body: `${activity.animal.name}: ${activity.title}`,
+          icon: '/jaothui-logo.png',
+          data: {
+            animalId: activity.animalId,
+            activityId: activity.id,
+            url: `/dashboard/animals/${activity.animalId}`
+          },
+          tag: `reminder-${activity.id}`
+        }
+      );
+    }
+  }
+}
+```
+
+### Vercel Cron Configuration
+
+```json
+// vercel.json - Cron job scheduling
+{
+  "crons": [
+    {
+      "path": "/api/cron/reminders",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}
+```
+
+**Last Updated**: 2025-07-12 (Round 8 Completed - Notification System) ✅
+**Next Review**: System maintenance and performance optimization
 
 **Round 7.3 Architecture Enhancements**:
 - ✅ Activity management pages (/dashboard/activities/)
@@ -771,3 +1055,15 @@ reportWebVitals((metric) => {
 - ✅ Smart back navigation system with URL parameter tracking
 - ✅ Context-aware navigation patterns throughout the application
 - ✅ Enhanced ActivityHistorySection component with seamless navigation
+
+**Round 8 Architecture Implementation Completed**:
+- ✅ Complete notification system with web push notifications and service worker integration
+- ✅ VAPID key configuration for secure push notification authentication
+- ✅ Daily cron job architecture with Vercel Cron for automated reminder processing
+- ✅ NotificationBell component with real-time updates and dropdown interface
+- ✅ Client-side and server-side push notification utilities
+- ✅ Service worker with notification actions (view, complete) and click handling
+- ✅ Integration with existing activity and farm management systems
+- ✅ Secure cron job authentication with CRON_SECRET
+- ✅ Push subscription management with database persistence
+- ✅ Mobile-optimized notification interfaces with 400px max-width design
