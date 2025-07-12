@@ -100,7 +100,7 @@ self.addEventListener('notificationclick', function(event) {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ status: 'COMPLETED' })
-        }).then(response => {
+        }).then(() => {
           console.log('Service Worker: Activity marked as completed');
         }).catch(error => {
           console.error('Service Worker: Error completing activity:', error);
