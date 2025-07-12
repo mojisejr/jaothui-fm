@@ -7,6 +7,7 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/api/webhooks/clerk',
   '/api/cron/(.*)',
+  '/service-worker.js',
 ])
 
 // Define profile completion and success routes
