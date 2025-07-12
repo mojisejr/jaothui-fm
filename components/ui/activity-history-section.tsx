@@ -58,8 +58,8 @@ export function ActivityHistorySection({ animalId, initialActivities = [] }: Act
 
   // Handle activity card click
   const handleActivityClick = (activityId: string) => {
-    // Future: Navigate to activity detail or edit
-    console.log('Activity clicked:', activityId);
+    // Navigate to activity detail with return path info
+    window.location.href = `/dashboard/activities/${activityId}?returnTo=animal&animalId=${animalId}`;
   };
 
   // Show visible activities based on display count

@@ -182,7 +182,7 @@ export default function AnimalActivitiesPage() {
 
   // Handle activity card click
   const handleActivityClick = (activityId: string) => {
-    router.push(`/dashboard/activities/${activityId}`)
+    router.push(`/dashboard/activities/${activityId}?returnTo=animalActivities&animalId=${animalId}`)
   }
 
   // Handle load more

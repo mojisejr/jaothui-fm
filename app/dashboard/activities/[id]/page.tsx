@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { 
   ChevronLeft, 
   Calendar, 
@@ -54,7 +54,12 @@ interface ActivityDetailResponse {
 export default function ActivityDetailPage() {
   const router = useRouter()
   const params = useParams()
+  const searchParams = useSearchParams()
   const activityId = params.id as string
+  
+  // Get return navigation info
+  const returnTo = searchParams.get('returnTo')
+  const animalId = searchParams.get('animalId')
 
   const [activity, setActivity] = useState<ActivityWithRelations | null>(null)
   const [loading, setLoading] = useState(true)
@@ -86,12 +91,12 @@ export default function ActivityDetailPage() {
         })
       } else {
         toast.error('ไม่พบข้อมูลกิจกรรม')
-        router.push('/dashboard/activities')
+        handleErrorNavigation()
       }
     } catch (error) {
       console.error('Error fetching activity:', error)
       toast.error('เกิดข้อผิดพลาดในการโหลดข้อมูล')
-      router.push('/dashboard/activities')
+      handleErrorNavigation()
     } finally {
       setLoading(false)
     }
@@ -183,6 +188,28 @@ export default function ActivityDetailPage() {
     }
   }
 
+  // Handle back navigation based on returnTo parameter
+  const handleBackNavigation = () => {
+    if (returnTo === 'animalActivities' && animalId) {
+      router.push(`/dashboard/animals/${animalId}/activities`)
+    } else if (returnTo === 'animal' && animalId) {
+      router.push(`/dashboard/animals/${animalId}`)
+    } else {
+      router.push('/dashboard/activities')
+    }
+  }
+
+  // Handle default error navigation
+  const handleErrorNavigation = () => {
+    if (returnTo === 'animalActivities' && animalId) {
+      router.push(`/dashboard/animals/${animalId}/activities`)
+    } else if (returnTo === 'animal' && animalId) {
+      router.push(`/dashboard/animals/${animalId}`)
+    } else {
+      router.push('/dashboard/activities')
+    }
+  }
+
   useEffect(() => {
     if (activityId) {
       fetchActivity()
@@ -203,7 +230,7 @@ export default function ActivityDetailPage() {
         <div className="text-center">
           <div className="text-lg text-gray-600 mb-4">ไม่พบข้อมูลกิจกรรม</div>
           <button
-            onClick={() => router.push('/dashboard/activities')}
+            onClick={handleErrorNavigation}
             className="py-2 px-4 bg-[#f39c12] text-white rounded-[25px] hover:bg-[#e67e22] transition-colors"
           >
             กลับไปยังรายการกิจกรรม
@@ -224,7 +251,7 @@ export default function ActivityDetailPage() {
         <div className="bg-white p-4 border-b flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <button
-              onClick={() => router.push('/dashboard/activities')}
+              onClick={handleBackNavigation}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -454,7 +481,7 @@ export default function ActivityDetailPage() {
         <div className="p-4 border-t">
           <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={() => router.push('/dashboard/activities')}
+              onClick={handleBackNavigation}
               className="py-3 px-4 border border-gray-300 text-gray-700 rounded-[25px] font-medium hover:bg-gray-50 transition-colors"
             >
               กลับไปรายการ

@@ -150,7 +150,7 @@ export default function ActivitiesPage() {
 
   // Handle activity card click
   const handleActivityClick = (activityId: string) => {
-    router.push(`/dashboard/activities/${activityId}`)
+    router.push(`/dashboard/activities/${activityId}?returnTo=activities`)
   }
 
   // Handle load more
