@@ -31,8 +31,8 @@ Development: http://localhost:3000/api
 │   │   └── route.ts        # GET, PUT, DELETE /api/animals/[id]
 │   └── generate-id/
 │       └── route.ts        # GET /api/animals/generate-id
-├── activities/             # Activity management
-│   ├── route.ts           # GET, POST /api/activities
+├── activities/             # Activity management ✅
+│   ├── route.ts           # GET, POST /api/activities (with animalId filtering support)
 │   └── [id]/
 │       ├── route.ts       # GET, PUT, DELETE /api/activities/[id]
 │       └── status/
@@ -858,6 +858,25 @@ export async function GET() {
 "อ่าน API-DESIGN.md sections: CRUD Operation Patterns, Status Update Pattern สำหรับ implement comprehensive activity management with status controls"
 ```
 
+### Round 7.4: Animal-Specific Activity Management
+**Primary Focus**: Animal-specific activity filtering and management APIs
+```typescript
+// ใช้สำหรับ:
+// - Enhanced GET /api/activities with animalId query parameter for filtering
+// - Animal Detail Page with recent activity history display
+// - Animal-specific Activity List Page (/dashboard/animals/[id]/activities/)
+// - POST /api/activities with automatic animalId association from context
+
+// Key API Enhancements:
+// - GET /api/activities?animalId={id} for filtering activities by specific animal
+// - Enhanced activity creation from animal context with proper animalId handling
+// - Activity history pagination optimized for animal-specific views
+// - Proper error handling for invalid animalId parameters
+
+// Prompt คำแนะนำ:
+"อ่าน API-DESIGN.md sections: Query Parameters & Filtering, Pagination Pattern สำหรับ implement animal-specific activity filtering และ management"
+```
+
 ### Round 8: Notification System
 **Primary Focus**: Notification APIs และ webhook integration
 ```typescript
@@ -887,12 +906,18 @@ export async function GET() {
 
 ---
 
-**Last Updated**: 2025-07-11 (Round 7.3 Implementation Complete)
-**Next Review**: After Round 8 Notification System implementation  
-**Usage**: สำหรับ Round 4, 6, 7, 7.2, 7.3 ✅, และ 8 ในการ implement และ maintain API standards
+**Last Updated**: 2025-07-12 (Round 7.4 Initiation - Animal-Specific Activity Management)
+**Next Review**: After Round 7.4 Animal-Specific Activity Management implementation  
+**Usage**: สำหรับ Round 4, 6, 7, 7.2, 7.3 ✅, 7.4 🚧, และ 8 ในการ implement และ maintain API standards
 
 **Round 7.3 API Enhancements Completed**:
 - ✅ Enhanced POST /api/activities with optional status field
 - ✅ Activity list pagination and filtering APIs
 - ✅ Activity detail and status update APIs
 - ✅ Comprehensive activity management CRUD operations
+
+**Round 7.4 API Enhancements In Progress**:
+- 🚧 Enhanced GET /api/activities with animalId filtering parameter
+- 🚧 Animal Detail Page integration with activity history display
+- 🚧 Animal-specific Activity List Page API support
+- 🚧 Optimized activity creation from animal context

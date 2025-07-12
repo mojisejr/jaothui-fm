@@ -99,7 +99,7 @@ model Activity {
 ### Round Structure & Dependencies:
 
 ```
-R1: Foundation → R2: Auth+DB → R3: Pages → R3.5: Profile Flow → R4: API → R5: Animal UI → R6: CRUD → R7: Activities → R7.1: Bug Fix → R7.2: History → R7.3: Activity Management ✅ → R8: Notifications
+R1: Foundation → R2: Auth+DB → R3: Pages → R3.5: Profile Flow → R4: API → R5: Animal UI → R6: CRUD → R7: Activities → R7.1: Bug Fix → R7.2: History → R7.3: Activity Management ✅ → R7.4: Animal-Specific Activity Management 🚧 → R8: Notifications
 ```
 
 ### Enhanced Round Prompts:
@@ -411,6 +411,37 @@ TESTING PROTOCOL:
 6. Verify mobile layout and touch interactions at 400px width
 
 COMMIT: "feat: implement comprehensive activity management system with list, detail, and enhanced creation"
+```
+
+#### Round 7.4: Animal-Specific Activity Management
+
+```
+อ่าน CLAUDE.md และทำ Round 7.4: Animal-Specific Activity Management ตาม paired sub-agent pattern
+
+TASK BREAKDOWN:
+- Task A: Enhanced Animal Detail Page with recent activity history display (dependencies: Round 7.3 completed)
+- Task B: Animal-specific Activity List Page (/dashboard/animals/[id]/activities/) (dependencies: Task A components)
+- Task C: API enhancements for animalId filtering in /api/activities (dependencies: Task B requirements)
+
+ACCEPTANCE CRITERIA CHECKLIST:
+□ Animal Detail Page displays recent activity history (5 most recent activities)
+□ "ดูกิจกรรมทั้งหมด" button navigates to animal-specific activity list
+□ Animal-specific Activity List Page filters activities for single animal only
+□ Activity creation from animal-specific page automatically associates correct animalId
+□ No "Reminder Tab" on animal-specific activity page (different from global activity management)
+□ API endpoint GET /api/activities?animalId={id} filters activities correctly
+□ Buffalo card pattern maintained throughout all new components
+□ Mobile responsive design verified (400px max-width)
+
+TESTING PROTOCOL:
+1. Navigate to animal detail page → verify recent activities display correctly
+2. Click "ดูกิจกรรมทั้งหมด" → navigates to animal-specific activity list
+3. Create activity from animal-specific page → animalId properly associated
+4. Verify activity filtering shows only activities for specific animal
+5. Test mobile layout at 400px width for all new components
+6. Verify API endpoint filtering with different animalId values
+
+COMMIT: "feat: implement animal-specific activity management with enhanced detail page and dedicated activity list"
 ```
 
 #### Round 8: Notification System

@@ -104,9 +104,17 @@ export function ActivityHistorySection({ animalId, initialActivities = [] }: Act
 
   return (
     <div className="bg-white rounded-[15px] p-5 shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        ประวัติกิจกรรม ({activities.length} รายการ)
-      </h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">
+          ประวัติกิจกรรม ({activities.length} รายการ)
+        </h3>
+        <button
+          onClick={() => window.location.href = `/dashboard/animals/${animalId}/activities`}
+          className="px-4 py-2 text-sm font-medium text-[#f39c12] bg-white border border-[#f39c12] rounded-lg hover:bg-[#f39c12] hover:text-white transition-colors duration-200 min-h-[44px]"
+        >
+          ดูกิจกรรมทั้งหมด
+        </button>
+      </div>
 
       {/* Activity History Cards */}
       <div className="space-y-0">

@@ -27,6 +27,8 @@ jaothui-fm/
 │   ├── dashboard/                # Protected dashboard pages
 │   │   ├── activities/           # Activity management pages ✅
 │   │   └── animals/              # Animal management pages
+│   │       └── [id]/
+│   │           └── activities/   # Animal-specific activity list page (Round 7.4)
 │   ├── profile/                  # Profile completion flow
 │   ├── globals.css               # Global styles
 │   ├── layout.tsx                # Root layout with providers
@@ -751,8 +753,8 @@ reportWebVitals((metric) => {
 
 ---
 
-**Last Updated**: 2025-07-11 (Round 7.3 Implementation Complete)
-**Next Review**: After Round 8 Notification System implementation
+**Last Updated**: 2025-07-12 (Round 7.4 Initiation - Animal-Specific Activity Management)
+**Next Review**: After Round 7.4 Animal-Specific Activity Management implementation
 
 **Round 7.3 Architecture Enhancements**:
 - ✅ Activity management pages (/dashboard/activities/)
@@ -760,3 +762,9 @@ reportWebVitals((metric) => {
 - ✅ Enhanced activity API routes with status support
 - ✅ Comprehensive activity CRUD architecture
 - ✅ Buffalo card pattern maintained throughout
+
+**Round 7.4 Architecture Enhancements**:
+- 🚧 Animal-specific activity list page (`/dashboard/animals/[id]/activities/`)
+- 🚧 Integration of recent activities display on Animal Detail Page
+- 🚧 Adaptation of existing activity components for animal-specific context
+- 🚧 Enhanced API filtering for animal-specific activity management

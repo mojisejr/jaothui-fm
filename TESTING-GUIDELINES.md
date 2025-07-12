@@ -953,6 +953,21 @@ module.exports = {
 "อ่าน TESTING-GUIDELINES.md sections: End-to-End Testing Patterns, Form Component Testing สำหรับ test comprehensive activity management system"
 ```
 
+### Round 7.4: Animal-Specific Activity Management
+**Primary Focus**: Animal-specific activity interface and API testing
+```tsx
+// ใช้สำหรับ:
+// - Animal Detail Page activity history display testing
+// - Animal-specific activity list page functionality testing (filtering, navigation)
+// - CRUD operations for animal-linked activities testing
+// - API filtering with animalId parameter testing
+// - Absence of Reminder Tab on animal-specific activity page testing
+// - Correct animalId association during activity creation from animal-specific context
+
+// Prompt คำแนะนำ:
+"อ่าน TESTING-GUIDELINES.md sections: Component Testing Patterns, API Testing Patterns สำหรับ test animal-specific activity management และ API filtering functionality"
+```
+
 ### Round 8: Notification System
 **Primary Focus**: Real-time feature testing และ service worker
 ```tsx
@@ -1145,8 +1160,8 @@ export const server = setupServer(...handlers);
 
 ---
 
-**Last Updated**: 2025-07-11 (Round 7.3 Implementation Complete)
-**Next Review**: After Round 8 Notification System testing
+**Last Updated**: 2025-07-12 (Round 7.4 Initiation - Animal-Specific Activity Management)
+**Next Review**: After Round 7.4 Animal-Specific Activity Management testing
 **Usage**: สำหรับทุก Round ในการ ensure quality และ maintain testing standards throughout development
 
 **Round 7.3 Testing Achievements**:
@@ -1158,3 +1173,13 @@ export const server = setupServer(...handlers);
 - ✅ Buffalo card pattern consistency testing
 - ✅ API integration testing for all activity endpoints
 - ✅ TypeScript compilation successful with zero errors
+
+**Round 7.4 Testing Objectives**:
+- 🚧 Animal Detail Page activity history display and navigation testing
+- 🚧 Animal-specific activity list page functionality testing (filtering, search, pagination)
+- 🚧 CRUD operations for animal-linked activities testing
+- 🚧 API testing for animalId filtering parameter functionality
+- 🚧 Absence of Reminder Tab on animal-specific activity page verification
+- 🚧 Correct animalId association during activity creation from animal-specific context testing
+- 🚧 Mobile responsive design testing for all new animal-specific activity components (400px max-width)
+- 🚧 Buffalo card pattern consistency maintained in animal-specific activity components
