@@ -41,7 +41,13 @@ export default function AnimalsPage() {
 
   const fetchReminders = async () => {
     try {
-      const response = await fetch('/api/activities?hasReminder=true&sortBy=reminderDate&sortOrder=asc')
+      const queryParams = new URLSearchParams({
+        hasReminder: 'true',
+        sortBy: 'reminderDate', 
+        sortOrder: 'asc'
+      })
+      
+      const response = await fetch(`/api/activities?${queryParams}`)
       const data: ApiResponse<PaginatedResponse<ActivityWithRelations>> = await response.json()
       
       if (data.success && data.data) {
