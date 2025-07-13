@@ -72,6 +72,11 @@ export default function AnimalForm({
   isSubmitting = false 
 }: AnimalFormProps) {
   const [isGeneratingId, setIsGeneratingId] = useState(false)
+  const [isDuplicateChecking, setIsDuplicateChecking] = useState(false)
+  const [duplicateCheckResult, setDuplicateCheckResult] = useState<{
+    exists: boolean
+    message: string
+  } | null>(null)
 
   const {
     register,
@@ -110,6 +115,7 @@ export default function AnimalForm({
 
   const selectedAnimalType = watch('animalType')
   const currentAnimalId = watch('animalId')
+  const farmId = watch('farmId')
 
   // Generate animal ID when animal type changes (only for create mode)
   const handleGenerateId = useCallback(async () => {
@@ -136,12 +142,53 @@ export default function AnimalForm({
     }
   }, [mode, selectedAnimalType, setValue])
 
-  // Auto-generate ID when animal type changes in create mode
+  // Check for duplicate animal ID
+  const checkDuplicate = useCallback(async (animalId: string) => {
+    if (!animalId || !farmId || animalId.length < 6) {
+      setDuplicateCheckResult(null)
+      return
+    }
+
+    setIsDuplicateChecking(true)
+    try {
+      const response = await fetch('/api/animals/check-duplicate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          animalId, 
+          farmId,
+          excludeAnimalId: mode === 'edit' ? initialData?.id : undefined
+        })
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        setDuplicateCheckResult(result)
+      }
+    } catch (error) {
+      console.error('Error checking duplicate:', error)
+    } finally {
+      setIsDuplicateChecking(false)
+    }
+  }, [farmId, mode, initialData?.id])
+
+  // Auto-generate ID only when animal type changes and ID is empty initially
   useEffect(() => {
-    if (mode === 'create' && selectedAnimalType && !currentAnimalId) {
+    if (mode === 'create' && selectedAnimalType && currentAnimalId === '') {
       handleGenerateId()
     }
-  }, [selectedAnimalType, mode, currentAnimalId, handleGenerateId])
+  }, [selectedAnimalType, mode, handleGenerateId])
+
+  // Check duplicate when animal ID changes
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (currentAnimalId && currentAnimalId !== initialData?.animalId) {
+        checkDuplicate(currentAnimalId)
+      }
+    }, 500) // Debounce 500ms
+
+    return () => clearTimeout(timeoutId)
+  }, [currentAnimalId, checkDuplicate, initialData?.animalId])
 
   const getAnimalTypeDisplay = (type: AnimalType) => {
     const typeMap = {
@@ -155,6 +202,11 @@ export default function AnimalForm({
   }
 
   const handleFormSubmit = async (data: AnimalFormData) => {
+    // Prevent submission if duplicate exists
+    if (duplicateCheckResult?.exists) {
+      return
+    }
+    
     try {
       await onSubmit(data)
     } catch (error) {
@@ -223,6 +275,15 @@ export default function AnimalForm({
             </div>
             {errors.animalId && (
               <p className="text-red-500 text-sm">{errors.animalId.message}</p>
+            )}
+            {/* Duplicate check indicator */}
+            {isDuplicateChecking && (
+              <p className="text-gray-500 text-sm">กำลังตรวจสอบรหัสสัตว์...</p>
+            )}
+            {duplicateCheckResult && !isDuplicateChecking && (
+              <p className={`text-sm ${duplicateCheckResult.exists ? 'text-red-500' : 'text-green-600'}`}>
+                {duplicateCheckResult.message}
+              </p>
             )}
           </div>
 
@@ -395,7 +456,7 @@ export default function AnimalForm({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || duplicateCheckResult?.exists || isDuplicateChecking}
               className="flex-1 px-4 py-3 bg-[#f39c12] text-white rounded-[25px] font-medium hover:bg-[#e67e22] disabled:bg-gray-400 transition-colors"
             >
               {isSubmitting ? 'กำลังบันทึก...' : (mode === 'create' ? 'เพิ่มสัตว์' : 'บันทึกการแก้ไข')}
