@@ -7,7 +7,7 @@ import { AnimalType } from '@prisma/client'
 import { format } from 'date-fns'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import ActivityStatusManager from '@/components/ui/activity-status-manager'
+import ReminderActionMenu from '@/components/ui/reminder-action-menu'
 import { ActivityWithRelations } from '@/app/api/activities/route'
 import { isReminderOverdue, formatActivityDateDisplay } from '@/lib/activity-utils'
 
@@ -279,22 +279,23 @@ export default function AnimalsPage() {
                           </div>
                         )}
                       </div>
-                      {reminder.reminderDate && isReminderOverdue(reminder.reminderDate) && (
-                        <div className="text-xs text-[#e74c3c] font-medium bg-[#e74c3c] bg-opacity-10 px-2 py-1 rounded-full">
-                          เกินกำหนด
-                        </div>
-                      )}
+                      <div className="flex items-start space-x-2">
+                        {reminder.reminderDate && isReminderOverdue(reminder.reminderDate) && (
+                          <div className="text-xs text-[#e74c3c] font-medium bg-[#e74c3c] bg-opacity-10 px-2 py-1 rounded-full">
+                            เกินกำหนด
+                          </div>
+                        )}
+                        <ReminderActionMenu
+                          activityId={reminder.id}
+                          currentStatus={reminder.status}
+                          activityDate={reminder.activityDate.toString()}
+                          reminderDate={reminder.reminderDate?.toString()}
+                          onStatusUpdate={handleStatusUpdate}
+                          isUpdating={updatingStatus === reminder.id}
+                          returnTo="animals"
+                        />
+                      </div>
                     </div>
-
-                    {/* Status Management */}
-                    <ActivityStatusManager
-                      activityId={reminder.id}
-                      currentStatus={reminder.status}
-                      activityDate={reminder.activityDate.toString()}
-                      reminderDate={reminder.reminderDate?.toString()}
-                      onStatusUpdate={handleStatusUpdate}
-                      isUpdating={updatingStatus === reminder.id}
-                    />
                   </div>
                 </div>
               ))

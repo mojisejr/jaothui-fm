@@ -1185,9 +1185,90 @@ const notificationPayloadSchema = z.object({
 });
 ```
 
-**Last Updated**: 2025-07-12 (Round 8 Completed - Notification System) ✅
-**Next Review**: System maintenance and performance optimization  
-**Usage**: Complete API reference for farm management system with notification capabilities
+## 🎯 Round 8.2: Activity Postpone API Enhancement (Planned)
+
+### Activity Postpone Pattern
+
+```typescript
+// Enhanced activity status update to support postpone functionality
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { status, reminderDate, postponeReason } = body;
+
+    // Validate postpone request
+    if (status === 'PENDING' && reminderDate) {
+      // Postpone logic: Update reminderDate while keeping status as PENDING
+      const updatedActivity = await prisma.activity.update({
+        where: { id: params.id },
+        data: {
+          status: 'PENDING',
+          reminderDate: new Date(reminderDate)
+        }
+      });
+
+      return NextResponse.json({
+        data: updatedActivity,
+        message: 'เลื่อนเวลาแจ้งเตือนเรียบร้อยแล้ว'
+      });
+    }
+
+    // Standard status update logic
+    const updatedActivity = await prisma.activity.update({
+      where: { id: params.id },
+      data: { status }
+    });
+
+    return NextResponse.json({
+      data: updatedActivity,
+      message: 'อัปเดตสถานะกิจกรรมเรียบร้อยแล้ว'
+    });
+
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+```
+
+### Reminder Action Menu Response Pattern
+
+```typescript
+// Response format for reminder action operations
+interface ReminderActionResponse {
+  success: boolean;
+  action: 'complete' | 'postpone' | 'cancel' | 'view';
+  data?: Activity;
+  message: string;
+  redirectUrl?: string; // For 'view' action
+}
+
+// Example responses:
+{
+  "success": true,
+  "action": "postpone",
+  "data": { /* updated activity */ },
+  "message": "เลื่อนเวลาแจ้งเตือนเรียบร้อยแล้ว"
+}
+
+{
+  "success": true,
+  "action": "view",
+  "redirectUrl": "/dashboard/activities/activity-id?returnTo=animals",
+  "message": "นำทางไปยังรายละเอียดกิจกรรม"
+}
+```
+
+**Last Updated**: 2025-07-13 (Round 8.2 Planning - UX Enhancement) 📋
+**Next Review**: Implementation of reminder action menu and activity postpone functionality  
+**Usage**: Complete API reference for farm management system with enhanced UX capabilities
 
 **Round 7.3 API Enhancements Completed**:
 - ✅ Enhanced POST /api/activities with optional status field
@@ -1214,3 +1295,12 @@ const notificationPayloadSchema = z.object({
 - ✅ Service worker support for push notification handling
 - ✅ VAPID key configuration for secure web push notifications
 - ✅ Real-time notification bell with dropdown interface
+
+**Round 8.1 API Implementation Completed**:
+- ✅ POST /api/animals/check-duplicate - real-time duplicate validation for animal IDs
+- ✅ Enhanced animal form with duplicate prevention and visual feedback
+
+**Round 8.2 API Enhancement Planning** (In Progress):
+- Activity postpone functionality enhancement
+- Extended activity status management for reminder postponing
+- Consistent 3-dots menu action pattern

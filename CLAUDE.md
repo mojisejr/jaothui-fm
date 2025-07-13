@@ -512,6 +512,48 @@ FILES IMPLEMENTED:
 - ✅ components/forms/animal-form.tsx - Enhanced with duplicate checking
 ```
 
+#### Round 8.2: UX Enhancement for Reminder Actions & Activity Postpone
+
+```
+Post-deployment UX enhancement: Improve reminder action interface and add postpone functionality
+
+BUSINESS CONTEXT:
+User feedback revealed UI/UX issues with reminder actions:
+1. Action buttons in animals page reminder tab are cluttered and prone to accidental clicks
+2. Activity detail page lacks postpone functionality for activities with reminder dates
+3. Need consolidated action menu for better mobile experience
+
+TASK BREAKDOWN:
+- Task A: Replace action buttons with 3-dots dropdown menu in animals reminder tab
+- Task B: Add "ดูรายละเอียด" option to navigate to activity detail
+- Task C: Enhance activity detail page with postpone functionality for reminder activities
+- Task D: Create ReminderActionMenu component for consistent 3-dots menu pattern
+
+ACCEPTANCE CRITERIA CHECKLIST:
+□ 3-dots menu replaces action buttons in animals reminder tab
+□ Menu includes: ดูรายละเอียด, เสร็จสิ้น, เลื่อนเวลา, ยกเลิก
+□ Activity detail page shows postpone option when reminderDate exists
+□ Postpone functionality updates reminderDate and maintains PENDING status
+□ Mobile responsive design maintained (400px max-width)
+□ Consistent UI/UX with existing buffalo_card pattern
+
+TESTING PROTOCOL:
+1. Navigate to /dashboard/animals → รายการแจ้งเตือน tab
+2. Verify 3-dots menu appears instead of action buttons
+3. Test all menu options function correctly
+4. Click "ดูรายละเอียด" → navigates to activity detail page
+5. In activity detail page with reminder → verify postpone option appears
+6. Test postpone functionality → reminder date updates correctly
+
+COMMIT: "feat: enhance reminder action UX with 3-dots menu and activity postpone functionality"
+
+FILES TO IMPLEMENT:
+- components/ui/reminder-action-menu.tsx - 3-dots dropdown menu component
+- app/dashboard/animals/page.tsx - Replace ActivityStatusManager with ReminderActionMenu
+- app/dashboard/activities/[id]/page.tsx - Add postpone functionality
+- components/ui/activity-postpone-modal.tsx - Postpone date selection modal
+```
+
 ## Recovery Strategy
 
 ```
