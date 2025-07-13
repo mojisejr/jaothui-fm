@@ -65,6 +65,8 @@ export default function ActivityDetailPage() {
   const [loading, setLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+  const [showPostponeModal, setShowPostponeModal] = useState(false)
+  const [newReminderDate, setNewReminderDate] = useState('')
   const [editData, setEditData] = useState({
     title: '',
     description: '',
@@ -172,6 +174,24 @@ export default function ActivityDetailPage() {
       toast.error('เกิดข้อผิดพลาดในการอัปเดตข้อมูล')
     } finally {
       setIsUpdatingStatus(false)
+    }
+  }
+
+  // Handle postpone reminder
+  const handlePostpone = async () => {
+    if (!newReminderDate) {
+      toast.error('กรุณาเลือกวันที่แจ้งเตือนใหม่')
+      return
+    }
+    
+    try {
+      await updateActivityStatus('PENDING', newReminderDate)
+      setShowPostponeModal(false)
+      setNewReminderDate('')
+      toast.success('เลื่อนเวลาแจ้งเตือนเรียบร้อยแล้ว')
+    } catch (error) {
+      console.error('Error postponing reminder:', error)
+      toast.error('เกิดข้อผิดพลาดในการเลื่อนเวลา')
     }
   }
 
@@ -443,24 +463,38 @@ export default function ActivityDetailPage() {
             <>
               {/* Status Management Buttons */}
               {activity.status === 'PENDING' && (
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => updateActivityStatus('COMPLETED')}
-                    disabled={isUpdatingStatus}
-                    className="py-3 px-4 bg-green-600 text-white rounded-[25px] font-medium hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
-                  >
-                    <CheckCircle className="w-4 h-4" />
-                    <span>เสร็จสิ้น</span>
-                  </button>
-                  <button
-                    onClick={() => updateActivityStatus('CANCELLED')}
-                    disabled={isUpdatingStatus}
-                    className="py-3 px-4 bg-red-600 text-white rounded-[25px] font-medium hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
-                  >
-                    <XCircle className="w-4 h-4" />
-                    <span>ยกเลิก</span>
-                  </button>
-                </div>
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => updateActivityStatus('COMPLETED')}
+                      disabled={isUpdatingStatus}
+                      className="py-3 px-4 bg-green-600 text-white rounded-[25px] font-medium hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      <span>เสร็จสิ้น</span>
+                    </button>
+                    <button
+                      onClick={() => updateActivityStatus('CANCELLED')}
+                      disabled={isUpdatingStatus}
+                      className="py-3 px-4 bg-red-600 text-white rounded-[25px] font-medium hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+                    >
+                      <XCircle className="w-4 h-4" />
+                      <span>ยกเลิก</span>
+                    </button>
+                  </div>
+                  
+                  {/* Postpone button for activities with reminder */}
+                  {activity.reminderDate && (
+                    <button
+                      onClick={() => setShowPostponeModal(true)}
+                      disabled={isUpdatingStatus}
+                      className="w-full py-3 px-4 bg-[#f39c12] text-white rounded-[25px] font-medium hover:bg-[#e67e22] transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      <span>เลื่อนเวลาแจ้งเตือน</span>
+                    </button>
+                  )}
+                </>
               )}
 
               {(activity.status === 'COMPLETED' || activity.status === 'CANCELLED') && (
@@ -495,6 +529,59 @@ export default function ActivityDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Postpone Modal */}
+      {showPostponeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-[15px] p-6 w-full max-w-sm">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">เลื่อนเวลาแจ้งเตือน</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="newReminderDate" className="block text-sm font-medium text-gray-700 mb-2">
+                  วันที่แจ้งเตือนใหม่
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Calendar className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    id="newReminderDate"
+                    type="date"
+                    value={newReminderDate}
+                    onChange={(e) => setNewReminderDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    max={activity?.activityDate ? activity.activityDate.toString().split('T')[0] : ''}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-[15px] bg-[#f5f5f5] focus:ring-2 focus:ring-[#f39c12] focus:border-transparent"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  เลื่อนการแจ้งเตือนไปยังวันที่ใหม่ (ก่อนวันที่กิจกรรม)
+                </p>
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    setShowPostponeModal(false)
+                    setNewReminderDate('')
+                  }}
+                  className="flex-1 py-2 px-4 border border-gray-300 rounded-[15px] text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  onClick={handlePostpone}
+                  disabled={!newReminderDate || isUpdatingStatus}
+                  className="flex-1 py-2 px-4 bg-[#f39c12] text-white rounded-[15px] font-medium hover:bg-[#e67e22] transition-colors disabled:opacity-50"
+                >
+                  {isUpdatingStatus ? 'กำลังบันทึก...' : 'เลื่อนเวลา'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
